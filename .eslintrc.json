@@ -1,6 +1,7 @@
 {
   "extends": "strongloop",
   "env": {
+    "es6": true,
     "jest": true,
     "node": true
   },
@@ -9,6 +10,6 @@
     "sourceType": "module"
   },
   "rules": {
-    "max-len": [2, 120, 8]
+    "max-len": [2, 100, 8]
   }
 }
