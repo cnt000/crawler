@@ -1,4 +1,3 @@
-const fs = require('fs');
 const mkdirp = require('mkdirp-promise');
 const fsPromises = require('fs').promises; // or require('fs/promises') in v10.0.0
 const getDirName = require('path').dirname;
