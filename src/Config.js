@@ -5,7 +5,8 @@ const getOrThrow = (prop, regex) => {
   return prop;
 };
 
-const Config = ({ url, number, path }) => ({
+const Config = ({ url, number, path, directory }) => ({
+  dataDir: getOrThrow(process.env.dataDir, directory),
   baseUrl: getOrThrow(process.env.baseUrl, url),
   plpUrl: getOrThrow(process.env.plpUrl, path),
   plpPages: Number(getOrThrow(process.env.plpPages, number)),

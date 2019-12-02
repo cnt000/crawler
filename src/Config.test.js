@@ -5,6 +5,7 @@ describe('Config', () => {
   beforeEach(() => {
     jest.resetModules();
     process.env = {
+      dataDir: './data',
       baseUrl: 'http://www.test.it',
       plpUrl: '/pages/id=1',
       plpPages: 42,
@@ -14,6 +15,7 @@ describe('Config', () => {
   it('should read config from env', () => {
     expect(Config(ValidationRegex)).toEqual(
       expect.objectContaining({
+        dataDir: expect.any(String),
         baseUrl: expect.any(String),
         plpUrl: expect.any(String),
         plpPages: expect.any(Number),
@@ -29,6 +31,7 @@ describe('Config', () => {
     process.env = Env;
     expect(Config(ValidationRegex)).toEqual(
       expect.objectContaining({
+        dataDir: expect.any(String),
         baseUrl: expect.any(String),
         plpUrl: expect.any(String),
         plpPages: expect.any(Number),

@@ -1,8 +1,8 @@
-
 const ValidationRegex = {
   url: /^http(s*):\/\/\S+$/,
   number: /^\d+$/,
-  path: /^\/\S+$/, // and not spaces
+  path: /^\/\S+$/,
+  directory: /^\.\/\S+$/,
 };
 
 module.exports = ValidationRegex;

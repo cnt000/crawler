@@ -4,11 +4,12 @@ const ValidationRegex = require('./ValidationRegex');
 const PlpCrawler = require('./PlpCrawler');
 const PlpToJson = require('./PlpToJson');
 
-const App = async() => {
+const App = async () => {
   const Config = require('./Config')(ValidationRegex);
   const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
-  const pagesList = GeneratePlpUrls(plpUrl, Config.plpPages);
-  await PlpCrawler(pagesList, PlpToJson);
+  const plpPagesList = GeneratePlpUrls(plpUrl, Config.plpPages);
+  // clean data dir
+  await PlpCrawler(plpPagesList, Config.dataDir, PlpToJson);
 };
 
 module.exports = App;
