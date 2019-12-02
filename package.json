@@ -12,6 +12,7 @@
   "author": "Edoardo Gargano cnt000",
   "license": "ISC",
   "dependencies": {
+    "cheerio": "^1.0.0-rc.3",
     "dotenv": "^8.2.0",
     "node-fetch": "^2.6.0",
     "prettier": "^1.19.1"
