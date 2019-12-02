@@ -1,5 +1,3 @@
-
-
 const PlpCrawler = require('./PlpCrawler');
 
 describe('PlpCrawler', () => {

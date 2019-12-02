@@ -1,24 +1,18 @@
-
-
 const fs = require('fs');
-const mkdirp = require('mkdirp');
+const mkdirp = require('mkdirp-promise');
+const fsPromises = require('fs').promises; // or require('fs/promises') in v10.0.0
 const getDirName = require('path').dirname;
 
-const SaveFile = async(filename, content) => {
-  await mkdirp(getDirName(filename), function(err) {
-    if (err) throw err;
-  });
-  await fs.writeFile(
-    filename,
-    content,
-    {
+const SaveFile = async (filename, content) => {
+  try {
+    await mkdirp(getDirName(filename));
+    await fsPromises.writeFile(filename, content, {
       encoding: 'utf8',
       flag: 'w',
-    },
-    err => {
-      if (err) throw err;
-    },
-  );
+    });
+  } catch (e) {
+    throw Error(e);
+  }
 };
 
 module.exports = SaveFile;
