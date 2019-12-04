@@ -6,6 +6,8 @@ describe('Config', () => {
     jest.resetModules();
     process.env = {
       dataDir: './data',
+      plpDataDir: 'plp/',
+      pdpDataDir: 'pdp/',
       baseUrl: 'http://www.test.it',
       plpUrl: '/pages/id=1',
       plpPages: 42,
@@ -16,6 +18,8 @@ describe('Config', () => {
     expect(Config(ValidationRegex)).toEqual(
       expect.objectContaining({
         dataDir: expect.any(String),
+        plpDataDir: expect.any(String),
+        pdpDataDir: expect.any(String),
         baseUrl: expect.any(String),
         plpUrl: expect.any(String),
         plpPages: expect.any(Number),
@@ -23,7 +27,7 @@ describe('Config', () => {
       }),
     );
   });
-  it('should work if baseUrl does contain https://', () => {
+  it('should work if dataDir does contain https://', () => {
     const Env = {
       ...process.env,
       baseUrl: 'https://test.it',
@@ -32,6 +36,8 @@ describe('Config', () => {
     expect(Config(ValidationRegex)).toEqual(
       expect.objectContaining({
         dataDir: expect.any(String),
+        plpDataDir: expect.any(String),
+        pdpDataDir: expect.any(String),
         baseUrl: expect.any(String),
         plpUrl: expect.any(String),
         plpPages: expect.any(Number),
@@ -39,7 +45,7 @@ describe('Config', () => {
       }),
     );
   });
-  it('should throw if baseUrl does not contain http://', () => {
+  it('should throw if dataDir does not contain http://', () => {
     const Env = {
       ...process.env,
       baseUrl: 'test.it',
@@ -47,7 +53,7 @@ describe('Config', () => {
     process.env = Env;
     expect(() => Config(ValidationRegex)).toThrow();
   });
-  it('should throw if baseUrl does contain spaces', () => {
+  it('should throw if dataDir does contain spaces', () => {
     const Env = {
       ...process.env,
       baseUrl: 'http://te s t.it',
@@ -55,7 +61,7 @@ describe('Config', () => {
     process.env = Env;
     expect(() => Config(ValidationRegex)).toThrow();
   });
-  it('should throw if baseUrl contain spaces or not contain http:', () => {
+  it('should throw if dataDir contain spaces or not contain http:', () => {
     const Env = {
       ...process.env,
       baseUrl: 'te s t.it',
