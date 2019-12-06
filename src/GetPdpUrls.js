@@ -1,6 +1,6 @@
 const globby = require('globby');
 const sortByNumberInFilename = require('./sortByNumberInFilename');
-const ReadFile = require('./ReadFile');
+const { ReadFile } = require('./File');
 
 const GetPdpUrls = async pdpPagesPattern => {
   const paths = await globby([pdpPagesPattern]);
