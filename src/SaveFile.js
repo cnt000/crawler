@@ -6,7 +6,6 @@ const SaveFile = async (filename, content) => {
   try {
     await mkdirp(getDirName(filename));
     await fsPromises.writeFile(filename, content, {
-      encoding: 'utf8',
       flag: 'w',
     });
   } catch (e) {
