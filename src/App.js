@@ -1,4 +1,5 @@
 require('dotenv').config();
+const del = require('del');
 const GetPlpUrls = require('./GetPlpUrls');
 const ValidationRegex = require('./ValidationRegex');
 const Crawler = require('./Crawler');
@@ -12,27 +13,30 @@ const filenameFunc = (directory, filename) => id =>
 
 const App = async () => {
   const Config = require('./Config')(ValidationRegex);
-  // FIXME clean data dir
+  const deletedPaths = await del([`${Config.dataDir}/*`]);
+  console.log(`Test file deleted: ${deletedPaths}`);
 
   const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
   const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
   const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
   await Crawler(
     plpPagesList,
-    filenameFunc(directoryToSavePlps, 'page'),
     PlpToJson,
+    filenameFunc(directoryToSavePlps, 'page'),
     CollectPlpProducts,
   );
+  console.log(`Plps collected in: ${directoryToSavePlps}`);
 
   const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`;
   const pdpFilesList = await GetPdpUrls(Config.baseUrl, plpFilesPattern);
   const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
   await Crawler(
     pdpFilesList,
-    filenameFunc(directoryToSavePdps, 'product'),
     PlpToJson,
+    filenameFunc(directoryToSavePdps, 'product'),
     CollectPdpProducts,
   );
+  console.log(`Pdps collected in: ${directoryToSavePdps}`);
 };
 
 module.exports = App;

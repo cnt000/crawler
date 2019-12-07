@@ -14,6 +14,7 @@ describe('ReadFile', () => {
     await fsPromises.writeFile(dirFilename, JSON.stringify(content), {
       flag: 'w',
     });
+    console.log(`Test files created: ${dirFilename}`);
   });
   it('should read a JSON file', async () => {
     expect(await ReadFile(dirFilename)).toEqual(content);
@@ -26,11 +27,12 @@ describe('ReadFile', () => {
     await fsPromises.writeFile(notValidFile, "['x, y','z']", {
       flag: 'w',
     });
+    console.log(`Test files created: ${notValidFile}`);
     await expect(ReadFile(notValidFile)).rejects.toThrow();
   });
   afterAll(async () => {
-    const deletedPaths = await del([`${dirFilename}/*`]);
-    console.log(`Test file deleted: ${deletedPaths}`);
+    const deletedPaths = await del([dir]);
+    console.log(`Test files deleted: ${deletedPaths}`);
   });
 });
 
