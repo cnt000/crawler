@@ -25,7 +25,7 @@ const App = async () => {
   );
 
   const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`;
-  const pdpFilesList = await GetPdpUrls(plpFilesPattern);
+  const pdpFilesList = await GetPdpUrls(Config.baseUrl, plpFilesPattern);
   const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
   await Crawler(
     pdpFilesList,

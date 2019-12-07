@@ -2,7 +2,7 @@ const globby = require('globby');
 const sortByNumberInFilename = require('./sortByNumberInFilename');
 const { ReadFile } = require('./File');
 
-const GetPdpUrls = async pdpPagesPattern => {
+const GetPdpUrls = async (domain, pdpPagesPattern) => {
   const paths = await globby([pdpPagesPattern]);
   const orderedPaths = sortByNumberInFilename(paths);
 
@@ -11,7 +11,9 @@ const GetPdpUrls = async pdpPagesPattern => {
   );
 
   const pdpPagesList = await Promise.all(plpFilesList).then(files =>
-    files.map(json => json.map(product => product.href)).flat(1),
+    files
+      .map(json => json.map(product => `${domain}${product.href.slice(2)}`))
+      .flat(1),
   );
 
   return pdpPagesList;

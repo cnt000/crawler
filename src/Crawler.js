@@ -1,8 +1,8 @@
 // FIXME l'id non deve essere incrementale
 const Crawler = async(pagesList, filenameFunc, asyncFunc, crawlFunc) => {
-  let i = 0;
   for (let url of pagesList) {
-    await asyncFunc(url, filenameFunc(i++), crawlFunc);
+    const id = url.split('=')[1];
+    await asyncFunc(url, filenameFunc(id), crawlFunc);
   }
 };
 
