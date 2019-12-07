@@ -1,5 +1,8 @@
-describe('it', () => {
-  it('should ', () => {
-    expect(1).toBe(1);
+const GetPdpUrls = require('./GetPdpUrls');
+
+describe('GetPdpUrls', () => {
+  // mock a directory with files, con degli href, e conta gli href
+  it('should return an array length 5', async () => {
+    expect(await GetPdpUrls('http://www.test.it/', './test/')).toEqual([]);
   });
 });

@@ -7,7 +7,7 @@
     "start": "node src/index.js",
     "pretest": "eslint --ignore-path .gitignore .",
     "lintfix": "npm run pretest -- --fix",
-    "test": "jest"
+    "test": "jest --coverage"
   },
   "author": "Edoardo Gargano cnt000",
   "license": "ISC",
