@@ -1,7 +1,7 @@
 const FetchToText = require('./FetchToText');
 const { SaveFile } = require('./File');
 
-const PlpToJson = async (url, filename, crawlFunc) => {
+const UrlToJsonFile = async (url, filename, crawlFunc) => {
   try {
     const html = await FetchToText(url);
     const dataFromWebpage = crawlFunc(html, filename);
@@ -12,4 +12,4 @@ const PlpToJson = async (url, filename, crawlFunc) => {
   }
 };
 
-module.exports = PlpToJson;
+module.exports = UrlToJsonFile;

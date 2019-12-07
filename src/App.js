@@ -1,12 +1,12 @@
 require('dotenv').config();
 const del = require('del');
-const GetPlpUrls = require('./GetPlpUrls');
 const ValidationRegex = require('./ValidationRegex');
 const Crawler = require('./Crawler');
-const PlpToJson = require('./PlpToJson');
+const GetPlpUrls = require('./GetPlpUrls');
+const GetPdpUrls = require('./GetPdpUrls');
 const CollectPlpProducts = require('./CollectPlpProducts');
 const CollectPdpProducts = require('./CollectPdpProducts');
-const GetPdpUrls = require('./GetPdpUrls');
+const UrlToJsonFile = require('./UrlToJsonFile');
 
 const filenameFunc = (directory, filename) => id =>
   `${directory}/${filename}-${id}.json`;
@@ -21,7 +21,7 @@ const App = async () => {
   const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
   await Crawler(
     plpPagesList,
-    PlpToJson,
+    UrlToJsonFile,
     filenameFunc(directoryToSavePlps, 'page'),
     CollectPlpProducts,
   );
@@ -32,7 +32,7 @@ const App = async () => {
   const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
   await Crawler(
     pdpFilesList,
-    PlpToJson,
+    UrlToJsonFile,
     filenameFunc(directoryToSavePdps, 'product'),
     CollectPdpProducts,
   );
