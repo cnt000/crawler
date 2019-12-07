@@ -9,9 +9,9 @@ const App = async () => {
   const Config = require('./Config')(ValidationRegex);
   // FIXME clean data dir
 
-  // const plpUrl = `${Config.dataDir}${Config.plpUrl}`;
-  // const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
-  // await PlpCrawler(plpPagesList, Config.dataDir, PlpToJson);
+  const plpUrl = `${Config.dataDir}${Config.plpUrl}`;
+  const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
+  await PlpCrawler(plpPagesList, Config.dataDir, PlpToJson);
   // passare tutta la directory da fuori e chiamarlo Crawler
 
   const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`;
