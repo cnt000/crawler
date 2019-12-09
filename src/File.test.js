@@ -1,46 +1,56 @@
 const fsPromises = require('fs').promises;
-const mkdirp = require('mkdirp-promise');
-const getDirName = require('path').dirname;
-const del = require('del');
-const { ReadFile } = require('./File');
+const { ReadFile, SaveFile } = require('./File');
 
 describe('ReadFile', () => {
-  const dir = './testFiles/';
   const filename = 'testFile.json';
-  const dirFilename = `${dir}${filename}`;
   const content = ['a', 'b', 'c'];
-  beforeAll(async () => {
-    await mkdirp(getDirName(dirFilename));
-    await fsPromises.writeFile(dirFilename, JSON.stringify(content), {
-      flag: 'w',
-    });
-    console.log(`Test files created: ${dirFilename}`);
-  });
   it('should read a JSON file', async () => {
-    expect(await ReadFile(dirFilename)).toEqual(content);
+    jest
+      .spyOn(fsPromises, 'readFile')
+      .mockImplementation((filename, options) => {
+        return JSON.stringify(content);
+      });
+    expect(await ReadFile(filename)).toEqual(content);
   });
   it('should throw if file does not exist', async () => {
+    jest
+      .spyOn(fsPromises, 'readFile')
+      .mockImplementation((filename, options) => {
+        throw Error('file does not exist');
+      });
     await expect(ReadFile('test.json')).rejects.toThrow();
   });
   it('should throw if file is not valid JSON', async () => {
+    jest
+      .spyOn(fsPromises, 'readFile')
+      .mockImplementation((filename, options) => {
+        try {
+          JSON.parse("['a, 'b, 'c']");
+        } catch (e) {
+          throw Error('JSON not valid');
+        }
+      });
     const notValidFile = './testFiles/notValidFile.json';
-    await fsPromises.writeFile(notValidFile, "['x, y','z']", {
-      flag: 'w',
-    });
-    console.log(`Test files created: ${notValidFile}`);
     await expect(ReadFile(notValidFile)).rejects.toThrow();
-  });
-  afterAll(async () => {
-    const deletedPaths = await del([dir]);
-    console.log(`Test files deleted: ${deletedPaths}`);
   });
 });
 
-// describe('WriteFile', () => {
-//     const dir = './testFiles/';
-//     const filename = 'testFileWritten.txt';
-//     const dirFilename = `${dir}${filename}`;
-//   it('should write a text file', async () => {
-//     await expect(SaveFile(dirFilename, 'loren impsum')).resolves.not.toThrow();
-//   });
-// });
+describe('WriteFile', () => {
+  const filename = 'testFile.json';
+  it('should write a text file', async () => {
+    jest
+      .spyOn(fsPromises, 'writeFile')
+      .mockImplementation((filename, content, options) => {
+        return content;
+      });
+    await expect(SaveFile(filename, 'loren impsum')).resolves.not.toThrow();
+  });
+  it('should throw with emtpy filename', async () => {
+    jest
+      .spyOn(fsPromises, 'writeFile')
+      .mockImplementation((filename, content, options) => {
+        if (filename === '') throw Error('filename is empty');
+      });
+    await expect(SaveFile('', 'loren impsum')).rejects.toThrow();
+  });
+});

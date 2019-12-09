@@ -5,7 +5,7 @@ const Crawler = require('./Crawler');
 const GetPlpUrls = require('./GetPlpUrls');
 const GetPdpUrls = require('./GetPdpUrls');
 const CollectPlpProducts = require('./CollectPlpProducts');
-const CollectPdpProducts = require('./CollectPdpProducts');
+const CollectPdpProduct = require('./CollectPdpProduct');
 const UrlToJsonFile = require('./UrlToJsonFile');
 
 const filenameFunc = (directory, filename) => id =>
@@ -34,7 +34,7 @@ const App = async () => {
     pdpFilesList,
     UrlToJsonFile,
     filenameFunc(directoryToSavePdps, 'product'),
-    CollectPdpProducts,
+    CollectPdpProduct,
   );
   console.log(`Pdps collected in: ${directoryToSavePdps}`);
 };

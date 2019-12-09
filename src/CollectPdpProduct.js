@@ -1,6 +1,6 @@
 const cheerio = require('cheerio');
 
-const CollectPdpProducts = html => {
+const CollectPdpProduct = html => {
   const $ = cheerio.load(html);
   const $table = $('#paginone tr:first-child > td > table');
   const $sizeAndPriceTable = $table.find('tr table');
@@ -25,4 +25,4 @@ const CollectPdpProducts = html => {
   return product;
 };
 
-module.exports = CollectPdpProducts;
+module.exports = CollectPdpProduct;
