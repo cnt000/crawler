@@ -14,28 +14,36 @@ const filenameFunc = (directory, filename) => id =>
 const App = async () => {
   const Config = require('./Config')(ValidationRegex);
   const deletedPaths = await del([`${Config.dataDir}/*`]);
-  console.log(`Test file deleted: ${deletedPaths}`);
+  console.log(`Data files deleted from: ${deletedPaths}`);
 
   const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
   const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
   const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
-  await Crawler(
-    plpPagesList,
-    UrlToJsonFile,
-    filenameFunc(directoryToSavePlps, 'page'),
-    CollectPlpProducts,
-  );
+  try {
+    await Crawler(
+      plpPagesList,
+      UrlToJsonFile,
+      filenameFunc(directoryToSavePlps, 'page'),
+      CollectPlpProducts,
+    );
+  } catch (e) {
+    console.log(e);
+  }
   console.log(`Plps collected in: ${directoryToSavePlps}`);
 
   const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`;
   const pdpFilesList = await GetPdpUrls(Config.baseUrl, plpFilesPattern);
   const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
-  await Crawler(
-    pdpFilesList,
-    UrlToJsonFile,
-    filenameFunc(directoryToSavePdps, 'product'),
-    CollectPdpProduct,
-  );
+  try {
+    await Crawler(
+      pdpFilesList,
+      UrlToJsonFile,
+      filenameFunc(directoryToSavePdps, 'product'),
+      CollectPdpProduct,
+    );
+  } catch (e) {
+    console.log(e);
+  }
   console.log(`Pdps collected in: ${directoryToSavePdps}`);
 };
 

@@ -12,9 +12,7 @@ const GetPdpUrls = async (domain, pdpPagesPattern) => {
 
   const pdpPagesList = await Promise.all(plpFilesList).then(files =>
     files
-      .map(json =>
-        json.map(product =>
-          `${domain}${product.href.slice(2)}`))
+      .map(json => json.map(product => `${domain}${product.href.slice(2)}`))
       .flat(1),
   );
 
