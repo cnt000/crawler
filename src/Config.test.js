@@ -8,10 +8,12 @@ describe('Config', () => {
       dataDir: './data',
       plpDataDir: 'plp/',
       pdpDataDir: 'pdp/',
+      imgDataDir: '/img',
       baseUrl: 'http://www.test.it',
       plpUrl: '/pages/id=1',
       plpPages: 42,
       pdpUrl: '/page/productId=12',
+      imgsUrl: '/php/',
     };
   });
   it('should read config from env', () => {
@@ -20,10 +22,12 @@ describe('Config', () => {
         dataDir: expect.any(String),
         plpDataDir: expect.any(String),
         pdpDataDir: expect.any(String),
+        imgDataDir: expect.any(String),
         baseUrl: expect.any(String),
         plpUrl: expect.any(String),
         plpPages: expect.any(Number),
         pdpUrl: expect.any(String),
+        imgsUrl: expect.any(String),
       }),
     );
   });
@@ -38,14 +42,16 @@ describe('Config', () => {
         dataDir: expect.any(String),
         plpDataDir: expect.any(String),
         pdpDataDir: expect.any(String),
+        imgDataDir: expect.any(String),
         baseUrl: expect.any(String),
         plpUrl: expect.any(String),
         plpPages: expect.any(Number),
         pdpUrl: expect.any(String),
+        imgsUrl: expect.any(String),
       }),
     );
   });
-  it('should throw if dataDir does not contain http://', () => {
+  it('should throw if baseUrl does not contain http://', () => {
     const Env = {
       ...process.env,
       baseUrl: 'test.it',
@@ -53,7 +59,7 @@ describe('Config', () => {
     process.env = Env;
     expect(() => Config(ValidationRegex)).toThrow();
   });
-  it('should throw if dataDir does contain spaces', () => {
+  it('should throw if baseUrl does contain spaces', () => {
     const Env = {
       ...process.env,
       baseUrl: 'http://te s t.it',
@@ -61,7 +67,7 @@ describe('Config', () => {
     process.env = Env;
     expect(() => Config(ValidationRegex)).toThrow();
   });
-  it('should throw if dataDir contain spaces or not contain http:', () => {
+  it('should throw if baseUrl contain spaces or not contain http:', () => {
     const Env = {
       ...process.env,
       baseUrl: 'te s t.it',
@@ -105,6 +111,22 @@ describe('Config', () => {
     const Env = {
       ...process.env,
       plpPages: 'test',
+    };
+    process.env = Env;
+    expect(() => Config(ValidationRegex)).toThrow();
+  });
+  it('should throw if imgsUrl contain spaces', () => {
+    const Env = {
+      ...process.env,
+      imgsUrl: '/tes t/',
+    };
+    process.env = Env;
+    expect(() => Config(ValidationRegex)).toThrow();
+  });
+  it('should throw if imgsUrl does not start with /', () => {
+    const Env = {
+      ...process.env,
+      imgsUrl: 'test/',
     };
     process.env = Env;
     expect(() => Config(ValidationRegex)).toThrow();

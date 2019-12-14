@@ -1,6 +1,7 @@
 const Crawler = async (pagesList, asyncFunc, filenameFunc, crawlFunc) => {
   for (let url of pagesList) {
-    const id = url.split('=')[1];
+    // FIXME
+    const id = /=/.test(url) ? url.split('=').pop() : url.split('/').pop();
     await asyncFunc(url, filenameFunc(id), crawlFunc);
   }
 };
