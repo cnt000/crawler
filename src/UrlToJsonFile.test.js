@@ -1,7 +1,7 @@
 const UrlToJsonFile = require('./UrlToJsonFile');
-const FetchToText = require('./FetchToText');
+const { FetchToText } = require('./FetchTo');
 const { SaveFile } = require('./File');
-jest.mock('./FetchToText');
+jest.mock('./FetchTo');
 jest.mock('./File');
 
 describe('UrlToJsonFile', () => {

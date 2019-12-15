@@ -1,4 +1,4 @@
-const FetchToText = require('./FetchToText');
+const { FetchToText } = require('./FetchTo');
 const { SaveFile } = require('./File');
 
 const UrlToJsonFile = async (url, filename, crawlFunc) => {

@@ -1,4 +1,4 @@
-const FetchToBuffer = require('./FetchToBuffer');
+const { FetchToBuffer } = require('./FetchTo');
 const { SaveFile } = require('./File');
 
 const UrlToBin = async (url, filename, crawlFunc) => {
