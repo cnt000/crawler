@@ -19,7 +19,7 @@ describe('GetPdpUrls', () => {
   ];
   const fileList = ['Test-1.json', 'Test-6.json'];
   globby.mockResolvedValue(fileList);
-  jest.spyOn(fsPromises, 'readFile').mockImplementation(filename => {
+  jest.spyOn(fsPromises, 'readFile').mockImplementation(() => {
     return JSON.stringify(content);
   });
   it('should return an array with complete url', async () => {
