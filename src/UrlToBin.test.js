@@ -10,12 +10,9 @@ describe('UrlToBin', () => {
     SaveFile.mockReturnValue(Promise.resolve(''));
     expect(() => UrlToBin('http://test.it', 'file.json')).not.toThrow();
   });
-  it('should throw exception if filename empty', () => {
+  it('should throw exception if filename empty', async () => {
     FetchToBuffer.mockReturnValue(Promise.resolve(Buffer.from('text')));
-    // FIXME node warning
-    SaveFile.mockReturnValue(Promise.reject(new Error('Error')));
-    expect(() =>
-      UrlToBin('http://test.it', ''),
-    ).not.toThrow();
+    SaveFile.mockReturnValue(Promise.reject('Filename is empty'));
+    await expect(UrlToBin('http://test.it', '')).rejects.toThrow();
   });
 });

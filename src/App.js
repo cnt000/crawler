@@ -7,8 +7,8 @@ const GetPdpUrls = require('./GetPdpUrls');
 const GetImgsUrls = require('./GetImgsUrls');
 const CollectPlpProducts = require('./CollectPlpProducts');
 const CollectPdpProduct = require('./CollectPdpProduct');
-const UrlToJsonFile = require('./UrlToJsonFile');
-const UrlToBinFile = require('./UrlToBin');
+const UrlToJson = require('./UrlToJson');
+const UrlToBin = require('./UrlToBin');
 
 const filenameFunc = (directory, filename) => id =>
   `${directory}/${filename}-${id}.json`;
@@ -34,7 +34,7 @@ const App = async () => {
     try {
       await Crawler(
         plpPagesList,
-        UrlToJsonFile,
+        UrlToJson,
         filenameFunc(directoryToSavePlps, 'page'),
         CollectPlpProducts,
       );
@@ -51,7 +51,7 @@ const App = async () => {
     try {
       await Crawler(
         pdpFilesList,
-        UrlToJsonFile,
+        UrlToJson,
         filenameFunc(directoryToSavePdps, 'product'),
         CollectPdpProduct,
       );
@@ -71,7 +71,7 @@ const App = async () => {
     try {
       await Crawler(
         imgsUrlsList,
-        UrlToBinFile,
+        UrlToBin,
         imageNameFunc(directoryToSaveImgs),
       );
     } catch (e) {
