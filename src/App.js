@@ -15,12 +15,14 @@ const filenameFunc = (directory, filename) => id =>
 
 const imageNameFunc = directory => filename => `${directory}/${filename}`;
 
-const App = async () => {
+const App = async ({
+  doClean = false,
+  doPlp = false,
+  doPdp = false,
+  doImg = false,
+  delay = 0,
+}) => {
   const Config = require('./Config')(ValidationRegex);
-  let doClean = false;
-  let doPlp = false;
-  let doPdp = false;
-  let doImg = true;
 
   if (doClean) {
     const deletedPaths = await del([`${Config.dataDir}/*`]);
@@ -69,11 +71,7 @@ const App = async () => {
     );
     const directoryToSaveImgs = `${Config.dataDir}${Config.imgDataDir}`;
     try {
-      await Crawler(
-        imgsUrlsList,
-        UrlToBin,
-        imageNameFunc(directoryToSaveImgs),
-      );
+      await Crawler(imgsUrlsList, UrlToBin, imageNameFunc(directoryToSaveImgs));
     } catch (e) {
       console.log(e);
     }
