@@ -1,7 +1,7 @@
 const { FetchToBuffer } = require('./FetchTo');
 const { SaveFile } = require('./File');
 
-const UrlToBin = async (url, filename) => {
+const UrlToBin = async (delay, url, filename) => {
   try {
     const img = await FetchToBuffer(url);
     await SaveFile(filename, Buffer.from(img));

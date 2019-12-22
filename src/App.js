@@ -26,7 +26,9 @@ const App = async ({
 
   if (doClean) {
     const deletedPaths = await del([`${Config.dataDir}/*`]);
-    console.log(`Data files deleted from: ${deletedPaths}`);
+    if (deletedPaths.length) {
+      console.log(`Data files deleted from: ${deletedPaths}`);
+    }
   }
 
   if (doPlp) {
@@ -35,6 +37,7 @@ const App = async ({
     const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
     try {
       await Crawler(
+        delay,
         plpPagesList,
         UrlToJson,
         filenameFunc(directoryToSavePlps, 'page'),
@@ -52,6 +55,7 @@ const App = async ({
     const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
     try {
       await Crawler(
+        delay,
         pdpFilesList,
         UrlToJson,
         filenameFunc(directoryToSavePdps, 'product'),
@@ -71,7 +75,12 @@ const App = async ({
     );
     const directoryToSaveImgs = `${Config.dataDir}${Config.imgDataDir}`;
     try {
-      await Crawler(imgsUrlsList, UrlToBin, imageNameFunc(directoryToSaveImgs));
+      await Crawler(
+        delay,
+        imgsUrlsList,
+        UrlToBin,
+        imageNameFunc(directoryToSaveImgs),
+      );
     } catch (e) {
       console.log(e);
     }

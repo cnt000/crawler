@@ -9,9 +9,7 @@
       "name": "vscode-jest-tests",
       "request": "launch",
       "program": "${workspaceFolder}/node_modules/jest/bin/jest",
-      "args": [
-        "--runInBand"
-      ],
+      "args": ["--runInBand"],
       "cwd": "${workspaceFolder}/",
       "console": "integratedTerminal",
       "internalConsoleOptions": "neverOpen",
@@ -24,13 +22,10 @@
       "runtimeExecutable": "node",
       "program": "${workspaceFolder}/src/index.js",
       "envFile": "${workspaceFolder}/.env",
-      "restart": true,
       "console": "integratedTerminal",
+      "args": ["--do", "plp", "--delay", "3"],
       "internalConsoleOptions": "neverOpen",
-      "skipFiles": [
-        "<node_internals>/**",
-        "${workspaceFolder}/data/**"
-      ]
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/data/**"]
     }
   ]
 }
