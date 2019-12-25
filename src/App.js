@@ -10,7 +10,7 @@ const CollectPdpProduct = require('./CollectPdpProduct');
 const UrlToJson = require('./UrlToJson');
 const UrlToBin = require('./UrlToBin');
 
-const filenameFunc = (directory, filename) => id =>
+const filenameFunc = (directory, filename, id) =>
   `${directory}/${filename}-${id}.json`;
 
 const imageNameFunc = directory => filename => `${directory}/${filename}`;
@@ -23,6 +23,7 @@ const App = async ({
   delay = 0,
 }) => {
   const Config = require('./Config')(ValidationRegex);
+  const delayMs = 1000 * delay;
 
   if (doClean) {
     const deletedPaths = await del([`${Config.dataDir}/*`]);
@@ -35,14 +36,19 @@ const App = async ({
     const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
     const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
     const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
-    try {
-      await Crawler(
-        delay,
-        plpPagesList,
-        UrlToJson,
-        filenameFunc(directoryToSavePlps, 'page'),
+
+    const plpCallback = (urlList, splitChar) => {
+      const url = urlList.pop();
+      const id = url.split(splitChar).pop();
+      return async () => await UrlToJson(
+        url,
+        `${directoryToSavePlps}/pages-${id}.json`,
         CollectPlpProducts,
       );
+    };
+
+    try {
+      await Crawler(delayMs, plpCallback(plpPagesList, '='));
     } catch (e) {
       console.log(e);
     }
