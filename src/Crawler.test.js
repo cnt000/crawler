@@ -44,8 +44,8 @@ describe('Crawler', () => {
     await Crawler(urlList, asyncF, filenameF, crawlF);
     expect(filenameF).toHaveBeenCalledWith('last.jpg');
   });
-  it('should use delay parameter', async () => {
-    const urlList = ['http://www.test-delay.com?id=98989'];
+  it('should use all parameters', async () => {
+    const urlList = ['http://www.test.com?id=98989'];
     const filenameF = jest.fn();
     const asyncF = jest.fn();
     const crawlF = jest.fn();

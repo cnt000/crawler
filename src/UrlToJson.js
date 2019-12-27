@@ -1,7 +1,7 @@
 const { FetchToText } = require('./FetchTo');
 const { SaveFile } = require('./File');
 
-const UrlToJson = async (delay, url, filename, crawlFunc) => {
+const UrlToJson = async (url, filename, crawlFunc) => {
   try {
     const html = await FetchToText(url);
     const dataFromWebpage = crawlFunc(html, filename);
