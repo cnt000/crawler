@@ -36,7 +36,7 @@ const App = async ({
     const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
     const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
     try {
-      await Crawler(
+      await Crawler.crawl(
         plpPagesList,
         UrlToJson,
         filenameFunc(directoryToSavePlps, 'page'),
@@ -53,7 +53,7 @@ const App = async ({
     const pdpFilesList = await GetPdpUrls(Config.baseUrl, plpFilesPattern);
     const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
     try {
-      await Crawler(
+      await Crawler.crawl(
         pdpFilesList,
         UrlToJson,
         filenameFunc(directoryToSavePdps, 'product'),
@@ -73,7 +73,7 @@ const App = async ({
     );
     const directoryToSaveImgs = `${Config.dataDir}${Config.imgDataDir}`;
     try {
-      await Crawler(
+      await Crawler.crawl(
         imgsUrlsList,
         UrlToBin,
         imageNameFunc(directoryToSaveImgs),
