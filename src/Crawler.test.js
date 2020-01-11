@@ -36,9 +36,10 @@ describe('Crawler', () => {
     const filenameF = jest.fn();
     const asyncF = jest.fn(() => console.log('asynF DENTRO'));
     const crawlF = jest.fn();
+    const mock = jest.spyOn(Crawler, 'crawl');
     await Crawler.crawl([], asyncF, filenameF, crawlF);
     jest.runOnlyPendingTimers();
-    expect(Crawler).toHaveBeenCalledTimes(0);
+    expect(mock).toHaveBeenCalledTimes(0);
   });
   // it('should reject promise if missing function', async () => {
   //   const mock = jest.spyOn(Crawler, 'crawl');
