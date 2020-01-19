@@ -1,5 +1,6 @@
 require('dotenv').config();
 const del = require('del');
+const ProgressBar = require('./ProgressBar');
 const ValidationRegex = require('./ValidationRegex');
 const Crawler = require('./Crawler');
 const GetPlpUrls = require('./GetPlpUrls');
@@ -30,8 +31,9 @@ const App = async ({
       console.log(`Data files deleted from: ${deletedPaths}`);
     }
   }
-
   if (doPlp) {
+    const bar = new ProgressBar('-', Config.plpPages, 50);
+    bar.draw();
     const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
     const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
     const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
@@ -41,6 +43,7 @@ const App = async ({
         UrlToJson,
         filenameFunc(directoryToSavePlps, 'page'),
         CollectPlpProducts,
+        bar,
       );
     } catch (e) {
       console.log(e);

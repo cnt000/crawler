@@ -10,13 +10,13 @@ class LoadBar {
   }
 
   calculateLength() {
-    // this.length : 1 = this.barLength : x; -> 1 step
+    // this.length : 1 = this.barLength : x; -> step
     return this.barLength / this.length;
   }
 
   draw() {
     this.intervalId = setInterval(() => {
-      // process.stdout.write('\x1Bc');
+      process.stdout.write('\x1Bc');
       console.log(this.bar);
       if (this.isFull()) {
         clearInterval(this.intervalId);
@@ -25,11 +25,13 @@ class LoadBar {
   }
 
   isEmpty() {
-    return /^[-]+$/.test(this.bar); // fixme dynamic char -
+    const emptyRegex = new RegExp(`^${this.char}+$`);
+    return emptyRegex.test(this.bar);
   }
 
   isFull() {
-    return !this.isEmpty();
+    // const fullRegex = new RegExp(`^${this.fullChar}+$`);
+    return /^\++$/.test(this.bar);
   }
 
   add(fullChar) {
