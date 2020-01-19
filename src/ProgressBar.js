@@ -1,5 +1,6 @@
 class LoadBar {
   constructor(char, length, barLength = 6) {
+    this.fullChar = '+';
     this.char = char;
     this.length = length;
     this.barLength = barLength;
@@ -30,14 +31,15 @@ class LoadBar {
   }
 
   isFull() {
-    // const fullRegex = new RegExp(`^${this.fullChar}+$`);
-    return /^\++$/.test(this.bar);
+    const skippedFullRegex = '\\' + this.fullChar;
+    const fullRegex = new RegExp(`^${skippedFullRegex}+$`);
+    return fullRegex.test(this.bar);
   }
 
-  add(fullChar) {
+  add() {
     const intStep = Math.ceil(this.step);
     const progressStep = Array(intStep)
-      .fill(fullChar)
+      .fill(this.fullChar)
       .join('');
     this.bar = progressStep + this.bar.slice(0, -intStep);
     this.bar = this.bar
