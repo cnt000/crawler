@@ -32,7 +32,7 @@ const App = async ({
     }
   }
   if (doPlp) {
-    const bar = new ProgressBar('-', Config.plpPages, 50);
+    const bar = new ProgressBar('-', Config.plpPages, '+', 50);
     bar.draw();
     const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
     const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
