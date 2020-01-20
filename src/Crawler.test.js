@@ -12,7 +12,8 @@ describe('Crawler', () => {
     const filenameF = jest.fn();
     const asyncF = jest.fn();
     const crawlF = jest.fn();
-    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    const bar = { add: () => {} };
+    await Crawler.crawl(urlList, asyncF, filenameF, crawlF, bar);
     expect(setTimeout).toHaveBeenCalledTimes(1);
   });
   it('should call asyncF', async () => {
@@ -44,12 +45,11 @@ describe('Crawler', () => {
     jest.runOnlyPendingTimers();
     expect(asyncF).toHaveBeenCalledTimes(0);
   });
-  // // it('should reject promise if missing function', async () => {
-  // //   const mock = jest.spyOn(Crawler, 'crawl');
-  // //   await Crawler.crawl(urlList);
-  // //   jest.runOnlyPendingTimers();
-  // //   expect(mock).rejects.toThrow();
-  // // });
+  // it('should reject promise if missing function', async () => {
+  //   const c = await Crawler.crawl();
+  //   jest.runOnlyPendingTimers();
+  //   expect(c).rejects.toThrow();
+  // });
   it('should have been called with all parameters', async () => {
     const urlList = ['http://www.test.com?id=2'];
     const asyncF = jest.fn();

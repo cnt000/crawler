@@ -1,14 +1,17 @@
 const Crawler = {
   crawl: async (pagesList, asyncFunc, filenameFunc, crawlFunc, bar) => {
     setTimeout(async () => {
+      if (pagesList.length === 0) {
+        return 'done';
+      }
       const url = pagesList.pop();
       const id = /=/.test(url) ? url.split('=').pop() : url.split('/').pop();
       console.time(url);
       await asyncFunc(url, filenameFunc(id), crawlFunc);
-      bar.add('+');
-      if (pagesList.length !== 0) {
-        await Crawler.crawl(pagesList, asyncFunc, filenameFunc, crawlFunc, bar);
+      if (bar) {
+        bar.add('+');
       }
+      await Crawler.crawl(pagesList, asyncFunc, filenameFunc, crawlFunc, bar);
     }, 1000);
   },
 };
