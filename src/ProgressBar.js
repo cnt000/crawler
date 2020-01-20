@@ -1,8 +1,8 @@
-class LoadBar {
-  constructor(char, length, barLength = 6) {
-    this.fullChar = '+';
+class ProgressBar {
+  constructor(char, length, fullChar = '+', barLength = 6) {
     this.char = char;
     this.length = length;
+    this.fullChar = fullChar;
     this.barLength = barLength;
     this.step = this.calculateLength();
     this.bar = Array(this.barLength)
@@ -17,7 +17,7 @@ class LoadBar {
 
   draw() {
     this.intervalId = setInterval(() => {
-      process.stdout.write('\x1Bc');
+      // process.stdout.write('\x1Bc');
       console.log(this.bar);
       if (this.isFull()) {
         clearInterval(this.intervalId);
@@ -48,4 +48,4 @@ class LoadBar {
   }
 }
 
-module.exports = LoadBar;
+module.exports = ProgressBar;
