@@ -3,6 +3,7 @@ const Crawler = {
     setTimeout(async () => {
       const url = pagesList.pop();
       const id = /=/.test(url) ? url.split('=').pop() : url.split('/').pop();
+      console.time(url);
       await asyncFunc(url, filenameFunc(id), crawlFunc);
       bar.add('+');
       if (pagesList.length !== 0) {

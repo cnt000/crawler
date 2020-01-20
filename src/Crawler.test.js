@@ -23,74 +23,84 @@ describe('Crawler', () => {
     jest.runOnlyPendingTimers();
     expect(asyncF).toHaveBeenCalledTimes(1);
   });
-  it('should call crawler recursively if list is not empty', async () => {
+  /* it('should call crawler recursively if list is not empty', async () => {
     const filenameF = jest.fn();
     const asyncF = jest.fn();
     const crawlF = jest.fn();
     const mock = jest.spyOn(Crawler, 'crawl');
     await Crawler.crawl([1, 2, 3], asyncF, filenameF, crawlF);
     jest.runOnlyPendingTimers();
-    expect(mock).toHaveBeenCalledTimes(3);
-  });
-  it('should not call crawler if list is empty', async () => {
+    expect(mock).toHaveBeenCalledTimes(1);
+    jest.runOnlyPendingTimers();
+    expect(mock).toHaveBeenCalledTimes(2);
+    jest.runOnlyPendingTimers();
+    expect(mock).toHaveBeenCalledTimes(1);
+  });*/
+  it('should not call asyncF if list is empty', async () => {
     const filenameF = jest.fn();
     const asyncF = jest.fn(() => console.log('asynF DENTRO'));
     const crawlF = jest.fn();
-    const mock = jest.spyOn(Crawler, 'crawl');
     await Crawler.crawl([], asyncF, filenameF, crawlF);
     jest.runOnlyPendingTimers();
-    expect(mock).toHaveBeenCalledTimes(0);
+    expect(asyncF).toHaveBeenCalledTimes(0);
   });
-  // it('should reject promise if missing function', async () => {
-  //   const mock = jest.spyOn(Crawler, 'crawl');
-  //   await Crawler.crawl(urlList);
-  //   jest.runOnlyPendingTimers();
-  //   expect(mock).rejects.toThrow();
-  // });
-  // it('should have been called with all parameters', async () => {
-  //   const urlList = ['http://www.test.com?id=2'];
-  //   const asyncF = jest.fn();
-  //   const filenameF = jest.fn();
-  //   const crawlF = jest.fn();
-  //   await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
-  //   expect(asyncF).toHaveBeenCalledWith(urlList[0], filenameF('mock'), crawlF);
-  // });
-  // it('should use last = in the url for the number', async () => {
-  //   const urlList = ['http://www.test.it/test?id=1'];
-  //   const filenameF = jest.fn();
-  //   const asyncF = jest.fn();
-  //   const crawlF = jest.fn();
-  //   await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
-  //   expect(filenameF).toHaveBeenCalledWith('1');
-  // });
-  // it('should use last / in the url for the number', async () => {
-  //   const urlList = ['http://www.test.it/first/second/last.jpg'];
-  //   const filenameF = jest.fn();
-  //   const asyncF = jest.fn();
-  //   const crawlF = jest.fn();
-  //   jest.runOnlyPendingTimers();
-  //   await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
-  //   expect(filenameF).toHaveBeenCalledWith('last.jpg');
-  // });
-  // it('should use all parameters', async () => {
-  //   const urlList = ['http://www.test.com?id=98989'];
-  //   const filenameF = jest.fn();
-  //   const asyncF = jest.fn();
-  //   const crawlF = jest.fn();
-  //   await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
-  //   expect(asyncF).toHaveBeenLastCalledWith(
-  //     urlList[0],
-  //     filenameF('mock'),
-  //     crawlF,
-  //   );
-  // });
-  // it('should call setInterval 2 times', async () => {
-  //   const filenameF = jest.fn();
-  //   const asyncF = jest.fn();
-  //   const crawlF = jest.fn();
-  //   await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
-  //   jest.advanceTimersByTime(1000);
-  //   expect(setInterval).toHaveBeenCalledTimes(1);
-  //   expect(setInterval).toHaveBeenLastCalledWith(expect.any(Function), 1000);
-  // });
+  // // it('should reject promise if missing function', async () => {
+  // //   const mock = jest.spyOn(Crawler, 'crawl');
+  // //   await Crawler.crawl(urlList);
+  // //   jest.runOnlyPendingTimers();
+  // //   expect(mock).rejects.toThrow();
+  // // });
+  it('should have been called with all parameters', async () => {
+    const urlList = ['http://www.test.com?id=2'];
+    const asyncF = jest.fn();
+    const filenameF = jest.fn();
+    const crawlF = jest.fn();
+    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    jest.runOnlyPendingTimers();
+    expect(asyncF).toHaveBeenCalledWith(
+      'http://www.test.com?id=2',
+      filenameF('mock'),
+      crawlF,
+    );
+  });
+  it('should use last = in the url for the number', async () => {
+    const urlList = ['http://www.test.it/test?id=1'];
+    const filenameF = jest.fn();
+    const asyncF = jest.fn();
+    const crawlF = jest.fn();
+    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    jest.runOnlyPendingTimers();
+    expect(filenameF).toHaveBeenCalledWith('1');
+  });
+  it('should use last / in the url for the number', async () => {
+    const urlList = ['http://www.test.it/first/second/last.jpg'];
+    const filenameF = jest.fn();
+    const asyncF = jest.fn();
+    const crawlF = jest.fn();
+    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    jest.runOnlyPendingTimers();
+    expect(filenameF).toHaveBeenCalledWith('last.jpg');
+  });
+  it('should use all parameters', async () => {
+    const urlList = ['http://www.test.com?id=98989'];
+    const filenameF = jest.fn();
+    const asyncF = jest.fn();
+    const crawlF = jest.fn();
+    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    jest.runOnlyPendingTimers();
+    expect(asyncF).toHaveBeenLastCalledWith(
+      'http://www.test.com?id=98989',
+      filenameF('mock'),
+      crawlF,
+    );
+  });
+  it('should call setTimeout with a function, with 1000 ms', async () => {
+    const filenameF = jest.fn();
+    const asyncF = jest.fn();
+    const crawlF = jest.fn();
+    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    jest.advanceTimersByTime(2000);
+    expect(setTimeout).toHaveBeenCalledTimes(1);
+    expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
+  });
 });
