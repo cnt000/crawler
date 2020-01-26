@@ -24,6 +24,7 @@ const App = async ({
   delay = 0,
 }) => {
   const Config = require('./Config')(ValidationRegex);
+  let bar;
 
   if (doClean) {
     const deletedPaths = await del([`${Config.dataDir}/*`]);
@@ -32,11 +33,11 @@ const App = async ({
     }
   }
   if (doPlp) {
-    const bar = new ProgressBar('-', Config.plpPages, '+', 50);
-    bar.draw();
+    bar = new ProgressBar('$', Config.plpPages, '*', 100);
     const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
     const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
     const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
+    bar.draw();
     try {
       await Crawler.crawl(
         plpPagesList,
@@ -54,6 +55,7 @@ const App = async ({
   if (doPdp) {
     const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`;
     const pdpFilesList = await GetPdpUrls(Config.baseUrl, plpFilesPattern);
+    bar = new ProgressBar('=', pdpFilesList.length, '#', 50);
     const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
     try {
       await Crawler.crawl(
@@ -74,6 +76,7 @@ const App = async ({
       `${Config.baseUrl}${Config.imgsUrl}`,
       pdpFilesPattern,
     );
+    bar = new ProgressBar('.', imgsUrlsList.length, '*', 50);
     const directoryToSaveImgs = `${Config.dataDir}${Config.imgDataDir}`;
     try {
       await Crawler.crawl(

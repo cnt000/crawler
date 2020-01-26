@@ -2,7 +2,7 @@ const ProgressBar = require('./ProgressBar');
 
 describe('progressBar', () => {
   it('should skip special character for empty char', () => {
-    const progressBar = new ProgressBar('$', 4, 'o', 4);
+    const progressBar = new ProgressBar('$', 4, '*', 4);
     expect(progressBar.isEmpty()).toBe(true);
     expect(progressBar.isFull()).toBe(false);
   });

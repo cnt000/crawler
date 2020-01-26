@@ -9,6 +9,10 @@ class ProgressBar {
     }
     this.length = length;
     this.fullChar = fullChar;
+    this.fullCharSkipped = fullChar;
+    if (fullRegex.test(this.fullChar)) {
+      this.fullCharSkipped = '\\' + this.fullChar;
+    }
     this.barLength = barLength;
     this.step = this.calculateLength();
     this.bar = Array(this.barLength)
@@ -37,8 +41,7 @@ class ProgressBar {
   }
 
   isFull() {
-    const skippedChar = '\\' + this.fullChar;
-    const fullRegex = new RegExp(`^${skippedChar}+$`);
+    const fullRegex = new RegExp(`^${this.fullCharSkipped}+$`);
     return fullRegex.test(this.bar);
   }
 
