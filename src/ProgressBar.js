@@ -1,6 +1,12 @@
 class ProgressBar {
   constructor(char, length, fullChar = '+', barLength = 6) {
+    const charsToSkipRegex = '^[[\\^$.|?*+()]{1}$';
+    const fullRegex = new RegExp(charsToSkipRegex);
     this.char = char;
+    this.charSkipped = char;
+    if (fullRegex.test(this.char)) {
+      this.charSkipped = '\\' + this.char;
+    }
     this.length = length;
     this.fullChar = fullChar;
     this.barLength = barLength;
@@ -17,34 +23,40 @@ class ProgressBar {
 
   draw() {
     this.intervalId = setInterval(() => {
-      // process.stdout.write('\x1Bc');
+      process.stdout.write('\x1Bc');
       console.log(this.bar);
       if (this.isFull()) {
         clearInterval(this.intervalId);
       }
-    }, 1000);
+    }, 250);
   }
 
   isEmpty() {
-    const emptyRegex = new RegExp(`^${this.char}+$`);
+    const emptyRegex = new RegExp(`^${this.charSkipped}+$`);
     return emptyRegex.test(this.bar);
   }
 
   isFull() {
-    const skippedFullRegex = '\\' + this.fullChar;
-    const fullRegex = new RegExp(`^${skippedFullRegex}+$`);
+    const skippedChar = '\\' + this.fullChar;
+    const fullRegex = new RegExp(`^${skippedChar}+$`);
     return fullRegex.test(this.bar);
   }
 
   add() {
-    const intStep = Math.ceil(this.step);
-    const progressStep = Array(intStep)
-      .fill(this.fullChar)
-      .join('');
-    this.bar = progressStep + this.bar.slice(0, -intStep);
-    this.bar = this.bar
-      .padEnd(this.barLength, this.char)
-      .substring(0, this.barLength);
+    this.bar = this.fullChar + this.bar.slice(0, -1);
+    const intStep = Math.ceil(this.step) - 1;
+    this.addOne(intStep);
+  }
+
+  addOne(remainingSteps) {
+    setTimeout(() => {
+      if (remainingSteps === 0) {
+        return;
+      }
+      this.bar = this.fullChar + this.bar.slice(0, -1);
+      remainingSteps = remainingSteps - 1;
+      this.addOne(remainingSteps);
+    }, 500);
   }
 }
 

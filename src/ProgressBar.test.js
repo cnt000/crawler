@@ -1,6 +1,11 @@
 const ProgressBar = require('./ProgressBar');
 
 describe('progressBar', () => {
+  it('should skip special character for empty char', () => {
+    const progressBar = new ProgressBar('$', 4, 'o', 4);
+    expect(progressBar.isEmpty()).toBe(true);
+    expect(progressBar.isFull()).toBe(false);
+  });
   it('should return empty=true, full=false after creation', () => {
     const progressBar = new ProgressBar('-', 4, '+', 4);
     expect(progressBar.isEmpty()).toBe(true);
@@ -67,46 +72,66 @@ describe('progressBar', () => {
   it('should add step and stay coherent with barLength', () => {
     const progressBar = new ProgressBar('-', 20, '+', 50);
     progressBar.add();
+    jest.runOnlyPendingTimers();
     expect(progressBar.bar).toEqual(
-      '+++-----------------------------------------------',
+      '++------------------------------------------------',
     );
     expect(progressBar.isEmpty()).not.toBe(true);
   });
   it('should add step without round, before last add', () => {
-    const progressBar = new ProgressBar('-', 10, '+', 50);
+    const progressBar = new ProgressBar('-', 10, '+', 20);
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
-    expect(progressBar.bar).toEqual(
-      '+++++++++++++++++++++++++++++++++++++++++++++-----',
-    );
+    jest.runOnlyPendingTimers();
+    expect(progressBar.bar).toEqual('++++++++++++++++++--');
     expect(progressBar.isEmpty()).not.toBe(true);
   });
-  it('should add step without round, before last add', () => {
-    const progressBar = new ProgressBar('-', 5, '+', 30);
+  it('should show full bar', () => {
+    const progressBar = new ProgressBar('-', 5, '+', 10);
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
-    expect(progressBar.bar).toEqual('++++++++++++++++++++++++++++++');
+    jest.runOnlyPendingTimers();
+    expect(progressBar.bar).toEqual('++++++++++');
     expect(progressBar.isFull()).toBe(true);
   });
   it('should add step with round, before last add', () => {
     const progressBar = new ProgressBar('-', 7, '+', 17);
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     progressBar.add();
+    jest.runOnlyPendingTimers();
     expect(progressBar.bar).toEqual('+++++++++++++++++');
     expect(progressBar.isFull()).toBe(true);
   });
