@@ -16,13 +16,10 @@ const command = {
   },
   plp: {
     ...base,
-    doClean: true,
     doPlp: true,
   },
   pdp: {
     ...base,
-    doClean: true,
-    doPlp: true,
     doPdp: true,
   },
   img: {
