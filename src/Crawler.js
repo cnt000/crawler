@@ -1,5 +1,5 @@
 const Crawler = {
-  crawl: async (pagesList, asyncFunc, filenameFunc, crawlFunc, bar) => {
+  crawl: async (pagesList, asyncFunc, filenameFunc, crawlFunc, bar, delay) => {
     setTimeout(async () => {
       if (pagesList.length === 0) {
         return 'done';
@@ -9,10 +9,10 @@ const Crawler = {
       console.time(url);
       await asyncFunc(url, filenameFunc(id), crawlFunc);
       if (bar) {
-        bar.add('+');
+        bar.add();
       }
-      await Crawler.crawl(pagesList, asyncFunc, filenameFunc, crawlFunc, bar);
-    }, 1000);
+      await Crawler.crawl(pagesList, asyncFunc, filenameFunc, crawlFunc, bar, delay);
+    }, delay);
   },
 };
 

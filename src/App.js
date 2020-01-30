@@ -45,6 +45,7 @@ const App = async ({
         filenameFunc(directoryToSavePlps, 'page'),
         CollectPlpProducts,
         bar,
+        delay,
       );
     } catch (e) {
       console.log(e);
@@ -58,7 +59,9 @@ const App = async ({
     if (pdpFilesList.length === 0) {
       throw Error('Plp files missing, please run --do plp first');
     }
+    console.log(`Sto per salvare ${pdpFilesList.length} json files relativi alla pdp`);
     bar = new ProgressBar('=', pdpFilesList.length, '#', 50);
+    bar.draw();
     const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
     try {
       await Crawler.crawl(
@@ -66,6 +69,8 @@ const App = async ({
         UrlToJson,
         filenameFunc(directoryToSavePdps, 'product'),
         CollectPdpProduct,
+        bar,
+        delay,
       );
     } catch (e) {
       console.log(e);
@@ -83,12 +88,16 @@ const App = async ({
       throw Error('Pdp files missing, please run --do pdp first');
     }
     bar = new ProgressBar('.', imgsUrlsList.length, '*', 50);
+    bar.draw();
     const directoryToSaveImgs = `${Config.dataDir}${Config.imgDataDir}`;
     try {
       await Crawler.crawl(
         imgsUrlsList,
         UrlToBin,
         imageNameFunc(directoryToSaveImgs),
+        void 0, // FIXME
+        bar,
+        delay,
       );
     } catch (e) {
       console.log(e);

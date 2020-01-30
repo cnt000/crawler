@@ -135,4 +135,22 @@ describe('progressBar', () => {
     expect(progressBar.bar).toEqual('+++++++++++++++++');
     expect(progressBar.isFull()).toBe(true);
   });
+  it('should work with large nr of files', () => {
+    const progressBar = new ProgressBar('-', 435, '+', 50);
+    progressBar.add();
+    jest.runOnlyPendingTimers();
+    progressBar.add();
+    jest.runOnlyPendingTimers();
+    progressBar.add();
+    jest.runOnlyPendingTimers();
+    progressBar.add();
+    jest.runOnlyPendingTimers();
+    progressBar.add();
+    jest.runOnlyPendingTimers();
+    progressBar.add();
+    jest.runOnlyPendingTimers();
+    progressBar.add();
+    jest.runOnlyPendingTimers();
+    expect(progressBar.bar).toEqual('+++++++-------------------------------------------');
+  });
 });

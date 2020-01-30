@@ -98,7 +98,8 @@ describe('Crawler', () => {
     const filenameF = jest.fn();
     const asyncF = jest.fn();
     const crawlF = jest.fn();
-    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    const bar = { add: () => {} };
+    await Crawler.crawl(urlList, asyncF, filenameF, crawlF, bar, 1000);
     jest.advanceTimersByTime(2000);
     expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);
