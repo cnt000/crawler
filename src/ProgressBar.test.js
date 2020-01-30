@@ -24,9 +24,9 @@ describe('progressBar', () => {
     expect(progressBar.isFull()).toBe(true);
   });
   it('should add first progress char', () => {
-    const progressBar = new ProgressBar('-', 4, '+', 4);
+    const progressBar = new ProgressBar('-', 4, 'a', 4);
     progressBar.add();
-    expect(progressBar.bar).toEqual('+---');
+    expect(progressBar.bar).toEqual('a---');
     expect(progressBar.isEmpty()).not.toBe(true);
   });
   it('should add second progress char', () => {
