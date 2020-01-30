@@ -55,6 +55,9 @@ const App = async ({
   if (doPdp) {
     const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`;
     const pdpFilesList = await GetPdpUrls(Config.baseUrl, plpFilesPattern);
+    if (pdpFilesList.length === 0) {
+      throw Error('Plp files missing, please run --do plp first');
+    }
     bar = new ProgressBar('=', pdpFilesList.length, '#', 50);
     const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
     try {
@@ -76,6 +79,9 @@ const App = async ({
       `${Config.baseUrl}${Config.imgsUrl}`,
       pdpFilesPattern,
     );
+    if (imgsUrlsList.length === 0) {
+      throw Error('Pdp files missing, please run --do pdp first');
+    }
     bar = new ProgressBar('.', imgsUrlsList.length, '*', 50);
     const directoryToSaveImgs = `${Config.dataDir}${Config.imgDataDir}`;
     try {
