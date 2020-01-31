@@ -1,28 +1,41 @@
 const Crawler = require('./Crawler');
 
-let urlList = '';
+let urlsList = '';
+let callback;
 
 describe('Crawler', () => {
   beforeEach(() => {
     jest.useFakeTimers();
-    urlList = ['http://www.test.it', 'http://www.test.com'];
+    urlsList = ['http://www.test.it', 'http://www.test.com'];
+    callback = jest.fn();
   });
 
   it('should call setTimeout', async () => {
-    const filenameF = jest.fn();
-    const asyncF = jest.fn();
-    const crawlF = jest.fn();
-    const bar = { add: () => {} };
-    await Crawler.crawl(urlList, asyncF, filenameF, crawlF, bar);
+    const setup = {
+      what: [],
+      urlsList,
+      callback: jest.fn(),
+      filename: jest.fn(),
+      crawler: jest.fn(),
+      progress: { add: () => {} },
+      delay: 0,
+    };
+    await Crawler.crawl(setup);
     expect(setTimeout).toHaveBeenCalledTimes(1);
   });
   it('should call asyncF', async () => {
-    const filenameF = jest.fn();
-    const asyncF = jest.fn();
-    const crawlF = jest.fn();
-    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    const setup = {
+      what: [],
+      urlsList,
+      callback,
+      filename: jest.fn(),
+      crawler: jest.fn(),
+      progress: { add: () => {} },
+      delay: 0,
+    };
+    await Crawler.crawl(setup);
     jest.runOnlyPendingTimers();
-    expect(asyncF).toHaveBeenCalledTimes(1);
+    expect(callback).toHaveBeenCalledTimes(1);
   });
   /* it('should call crawler recursively if list is not empty', async () => {
     const filenameF = jest.fn();
@@ -38,12 +51,18 @@ describe('Crawler', () => {
     expect(mock).toHaveBeenCalledTimes(1);
   });*/
   it('should not call asyncF if list is empty', async () => {
-    const filenameF = jest.fn();
-    const asyncF = jest.fn(() => console.log('asynF DENTRO'));
-    const crawlF = jest.fn();
-    await Crawler.crawl([], asyncF, filenameF, crawlF);
+    const setup = {
+      what: [],
+      urlsList: [],
+      callback,
+      filename: jest.fn(),
+      crawler: jest.fn(),
+      progress: { add: () => {} },
+      delay: 0,
+    };
+    await Crawler.crawl(setup);
     jest.runOnlyPendingTimers();
-    expect(asyncF).toHaveBeenCalledTimes(0);
+    expect(callback).toHaveBeenCalledTimes(0);
   });
   // it('should reject promise if missing function', async () => {
   //   const c = await Crawler.crawl();
@@ -51,55 +70,92 @@ describe('Crawler', () => {
   //   expect(c).rejects.toThrow();
   // });
   it('should have been called with all parameters', async () => {
+    callback.mockReset();
     const urlList = ['http://www.test.com?id=2'];
-    const asyncF = jest.fn();
-    const filenameF = jest.fn();
+    const filenameF = jest.fn(() => 'test2');
     const crawlF = jest.fn();
-    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    const setup = {
+      what: [],
+      urlsList: urlList,
+      callback,
+      filename: filenameF,
+      crawler: jest.fn(),
+      progress: false,
+      delay: 0,
+    };
+    await Crawler.crawl(setup);
     jest.runOnlyPendingTimers();
-    expect(asyncF).toHaveBeenCalledWith(
+    expect(callback).toHaveBeenCalledWith(
       'http://www.test.com?id=2',
-      filenameF('mock'),
+      'test2',
       crawlF,
     );
   });
   it('should use last = in the url for the number', async () => {
     const urlList = ['http://www.test.it/test?id=1'];
-    const filenameF = jest.fn();
-    const asyncF = jest.fn();
-    const crawlF = jest.fn();
-    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    const filenameF = jest.fn(() => 'test');
+    const setup = {
+      what: [],
+      urlsList: urlList,
+      callback,
+      filename: filenameF,
+      crawler: jest.fn(),
+      progress: { add: () => {} },
+      delay: 0,
+    };
+    await Crawler.crawl(setup);
     jest.runOnlyPendingTimers();
     expect(filenameF).toHaveBeenCalledWith('1');
   });
   it('should use last / in the url for the number', async () => {
     const urlList = ['http://www.test.it/first/second/last.jpg'];
-    const filenameF = jest.fn();
-    const asyncF = jest.fn();
-    const crawlF = jest.fn();
-    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    const filenameF = jest.fn(() => 'test');
+    const setup = {
+      what: [],
+      urlsList: urlList,
+      callback,
+      filename: filenameF,
+      crawler: jest.fn(),
+      progress: { add: () => {} },
+      delay: 0,
+    };
+    await Crawler.crawl(setup);
     jest.runOnlyPendingTimers();
     expect(filenameF).toHaveBeenCalledWith('last.jpg');
   });
-  it('should use all parameters', async () => {
+  it.only('should use all parameters', async () => {
+    callback.mockReset();
     const urlList = ['http://www.test.com?id=98989'];
-    const filenameF = jest.fn();
-    const asyncF = jest.fn();
-    const crawlF = jest.fn();
-    await Crawler.crawl(urlList, asyncF, filenameF, crawlF);
+    const filenameF = jest.fn(() => 'test');
+    const setup = {
+      what: [],
+      urlsList: urlList,
+      callback,
+      filename: filenameF,
+      crawler: jest.fn(),
+      progress: false,
+      delay: 0,
+    };
+    await Crawler.crawl(setup);
     jest.runOnlyPendingTimers();
-    expect(asyncF).toHaveBeenLastCalledWith(
+    expect(callback).toHaveBeenCalledWith(
       'http://www.test.com?id=98989',
-      filenameF('mock'),
-      crawlF,
+      'test',
+      jest.fn(),
     );
   });
   it('should call setTimeout with a function, with 1000 ms', async () => {
-    const filenameF = jest.fn();
-    const asyncF = jest.fn();
-    const crawlF = jest.fn();
-    const bar = { add: () => {} };
-    await Crawler.crawl(urlList, asyncF, filenameF, crawlF, bar, 1000);
+    const filenameF = jest.fn(() => 'test');
+    const setup = {
+      what: [],
+      urlsList,
+      callback,
+      filename: filenameF,
+      crawler: jest.fn(),
+      progress: { add: () => {} },
+      delay: 1000,
+    };
+    await Crawler.crawl(setup);
     jest.advanceTimersByTime(2000);
     expect(setTimeout).toHaveBeenCalledTimes(1);
     expect(setTimeout).toHaveBeenLastCalledWith(expect.any(Function), 1000);

@@ -11,7 +11,7 @@ const CollectPdpProduct = require('./CollectPdpProduct');
 const UrlToJson = require('./UrlToJson');
 const UrlToBin = require('./UrlToBin');
 
-const filenameFunc = (directory, filename) => id =>
+const createFileName = (directory, filename) => id =>
   `${directory}/${filename}-${id}.json`;
 
 const imageNameFunc = directory => filename => `${directory}/${filename}`;
@@ -25,6 +25,7 @@ const App = async ({
 }) => {
   const Config = require('./Config')(ValidationRegex);
   let bar;
+  let setup;
 
   if (doClean) {
     const deletedPaths = await del([`${Config.dataDir}/*`]);
@@ -33,52 +34,41 @@ const App = async ({
     }
   }
   if (doPlp) {
-    bar = new ProgressBar('$', Config.plpPages, '*', 100);
     const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
     const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
     const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
-    bar.draw();
-    try {
-      await Crawler.crawl(
-        plpPagesList,
-        UrlToJson,
-        filenameFunc(directoryToSavePlps, 'page'),
-        CollectPlpProducts,
-        bar,
-        delay,
-      );
-    } catch (e) {
-      console.log(e);
-    }
-    console.log(`Plps collected in: ${directoryToSavePlps}`);
+    setup = {
+      what: ['Plp', directoryToSavePlps],
+      urlsList: plpPagesList,
+      callback: UrlToJson,
+      filename: createFileName(directoryToSavePlps, 'page'),
+      crawler: CollectPlpProducts,
+      progress: bar,
+      delay,
+    };
   }
 
   if (doPdp) {
+    const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
     const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`;
     const pdpFilesList = await GetPdpUrls(Config.baseUrl, plpFilesPattern);
     if (pdpFilesList.length === 0) {
       throw Error('Plp files missing, please run --do plp first');
     }
-    console.log(`Sto per salvare ${pdpFilesList.length} json files relativi alla pdp`);
-    bar = new ProgressBar('=', pdpFilesList.length, '#', 50);
-    bar.draw();
-    const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
-    try {
-      await Crawler.crawl(
-        pdpFilesList,
-        UrlToJson,
-        filenameFunc(directoryToSavePdps, 'product'),
-        CollectPdpProduct,
-        bar,
-        delay,
-      );
-    } catch (e) {
-      console.log(e);
-    }
-    console.log(`Pdps collected in: ${directoryToSavePdps}`);
+    console.log(`I'm going to save ${pdpFilesList.length} json files for pdp`);
+    setup = {
+      what: ['Pdp', directoryToSavePdps],
+      urlsList: pdpFilesList,
+      callback: UrlToJson,
+      filename: createFileName(directoryToSavePdps, 'product'),
+      crawler: CollectPdpProduct,
+      progress: bar,
+      delay,
+    };
   }
 
   if (doImg) {
+    const directoryToSaveImgs = `${Config.dataDir}${Config.imgDataDir}`;
     const pdpFilesPattern = `${Config.dataDir}${Config.pdpDataDir}/*.json`;
     const imgsUrlsList = await GetImgsUrls(
       `${Config.baseUrl}${Config.imgsUrl}`,
@@ -87,22 +77,24 @@ const App = async ({
     if (imgsUrlsList.length === 0) {
       throw Error('Pdp files missing, please run --do pdp first');
     }
-    bar = new ProgressBar('.', imgsUrlsList.length, '*', 50);
+    setup = {
+      what: ['Images', directoryToSaveImgs],
+      urlsList: imgsUrlsList,
+      callback: UrlToBin,
+      filename: imageNameFunc(directoryToSaveImgs),
+      crawler: void 0, // FIXME
+      progress: bar,
+      delay,
+    };
+  }
+  try {
+    bar = new ProgressBar('=', setup.urlsList.length, '#', 100);
+    const setupWithProgressbar = { ...setup, progress: bar };
     bar.draw();
-    const directoryToSaveImgs = `${Config.dataDir}${Config.imgDataDir}`;
-    try {
-      await Crawler.crawl(
-        imgsUrlsList,
-        UrlToBin,
-        imageNameFunc(directoryToSaveImgs),
-        void 0, // FIXME
-        bar,
-        delay,
-      );
-    } catch (e) {
-      console.log(e);
-    }
-    console.log(`Images collected in: ${directoryToSaveImgs}`);
+    await Crawler.crawl(setupWithProgressbar);
+    console.log(`${setup.what[0]} collected in: ${setup.what[1]}`);
+  } catch (e) {
+    console.log(e);
   }
 };
 
