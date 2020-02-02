@@ -10,6 +10,7 @@ const CollectPlpProducts = require('./CollectPlpProducts');
 const CollectPdpProduct = require('./CollectPdpProduct');
 const UrlToJson = require('./UrlToJson');
 const UrlToBin = require('./UrlToBin');
+const Log = require('./Log');
 
 const createFileName = (directory, filename) => id =>
   `${directory}/${filename}-${id}.json`;
@@ -24,19 +25,23 @@ const App = async ({
   delay = 0,
 }) => {
   const Config = require('./Config')(ValidationRegex);
+  const log = new Log();
   let bar;
   let setup;
 
   if (doClean) {
     const deletedPaths = await del([`${Config.dataDir}/*`]);
     if (deletedPaths.length) {
-      console.log(`Data files deleted from: ${deletedPaths}`);
+      log.add(`Data files deleted from: ${deletedPaths}`);
+      log.print();
     }
   }
   if (doPlp) {
     const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
     const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
     const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
+    log.add(`I'm going to save ${plpPagesList.length} json files for plp`);
+    log.print();
     setup = {
       what: ['Plp', directoryToSavePlps],
       urlsList: plpPagesList,
@@ -55,7 +60,8 @@ const App = async ({
     if (pdpFilesList.length === 0) {
       throw Error('Plp files missing, please run --do plp first');
     }
-    console.log(`I'm going to save ${pdpFilesList.length} json files for pdp`);
+    log.add(`I'm going to save ${pdpFilesList.length} json files for pdp`);
+    log.print();
     setup = {
       what: ['Pdp', directoryToSavePdps],
       urlsList: pdpFilesList,
@@ -77,6 +83,8 @@ const App = async ({
     if (imgsUrlsList.length === 0) {
       throw Error('Pdp files missing, please run --do pdp first');
     }
+    log.add(`I'm going to save ${imgsUrlsList.length} image files`);
+    log.print();
     setup = {
       what: ['Images', directoryToSaveImgs],
       urlsList: imgsUrlsList,
@@ -88,11 +96,12 @@ const App = async ({
     };
   }
   try {
-    bar = new ProgressBar('=', setup.urlsList.length, '#', 100);
+    bar = new ProgressBar(log, '=', setup.urlsList.length, '#', 100);
     const setupWithProgressbar = { ...setup, progress: bar };
     bar.draw();
     await Crawler.crawl(setupWithProgressbar);
-    console.log(`${setup.what[0]} collected in: ${setup.what[1]}`);
+    log.add(`${setup.what[0]} collected in: ${setup.what[1]}`);
+    log.print();
   } catch (e) {
     console.log(e);
   }

@@ -123,7 +123,7 @@ describe('Crawler', () => {
     jest.runOnlyPendingTimers();
     expect(filenameF).toHaveBeenCalledWith('last.jpg');
   });
-  it.only('should use all parameters', async () => {
+  it('should use all parameters', async () => {
     callback.mockReset();
     const urlList = ['http://www.test.com?id=98989'];
     const filenameF = jest.fn(() => 'test');
@@ -153,7 +153,7 @@ describe('Crawler', () => {
       filename: filenameF,
       crawler: jest.fn(),
       progress: { add: () => {} },
-      delay: 1000,
+      delay: 1,
     };
     await Crawler.crawl(setup);
     jest.advanceTimersByTime(2000);
