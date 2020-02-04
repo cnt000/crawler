@@ -1,13 +1,18 @@
 class Log {
   constructor() {
     this.text = '';
+    this.updatableText = '';
+  }
+  append(str) {
+    this.text += `${str}\n`;
   }
   add(str) {
-    this.text += `${str}\n`;
+    this.updatableText = `${str}\n`;
   }
   print() {
     // process.stdout.write('\x1Bc');
-    console.log(this.text);
+    console.clear();
+    console.log(`${this.text}\n${this.updatableText}`);
   }
 }
 

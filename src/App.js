@@ -32,7 +32,7 @@ const App = async ({
   if (doClean) {
     const deletedPaths = await del([`${Config.dataDir}/*`]);
     if (deletedPaths.length) {
-      log.add(`Data files deleted from: ${deletedPaths}`);
+      log.append(`Data files deleted from: ${deletedPaths}`);
       log.print();
     }
   }
@@ -40,7 +40,7 @@ const App = async ({
     const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
     const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
     const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
-    log.add(`I'm going to save ${plpPagesList.length} json files for plp`);
+    log.append(`I'm going to save ${plpPagesList.length} json files for plp`);
     log.print();
     setup = {
       what: ['Plp', directoryToSavePlps],
@@ -60,7 +60,7 @@ const App = async ({
     if (pdpFilesList.length === 0) {
       throw Error('Plp files missing, please run --do plp first');
     }
-    log.add(`I'm going to save ${pdpFilesList.length} json files for pdp`);
+    log.append(`I'm going to save ${pdpFilesList.length} json files for pdp`);
     log.print();
     setup = {
       what: ['Pdp', directoryToSavePdps],
@@ -83,7 +83,7 @@ const App = async ({
     if (imgsUrlsList.length === 0) {
       throw Error('Pdp files missing, please run --do pdp first');
     }
-    log.add(`I'm going to save ${imgsUrlsList.length} image files`);
+    log.append(`I'm going to save ${imgsUrlsList.length} image files`);
     log.print();
     setup = {
       what: ['Images', directoryToSaveImgs],
@@ -100,7 +100,7 @@ const App = async ({
     const setupWithProgressbar = { ...setup, progress: bar };
     bar.draw();
     await Crawler.crawl(setupWithProgressbar);
-    log.add(`${setup.what[0]} collected in: ${setup.what[1]}`);
+    log.append(`${setup.what[0]} collected in: ${setup.what[1]}`);
     log.print();
   } catch (e) {
     console.log(e);
