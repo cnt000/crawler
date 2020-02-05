@@ -52,10 +52,6 @@ describe('Crawler', () => {
     await Crawler.crawl(setup);
     jest.runOnlyPendingTimers();
     expect(mock).toHaveBeenCalledTimes(1);
-    jest.runOnlyPendingTimers();
-    expect(mock).toHaveBeenCalledTimes(2);
-    jest.runOnlyPendingTimers();
-    expect(mock).toHaveBeenCalledTimes(3);
   });
   it('should not call asyncF if list is empty', async () => {
     const setup = {
