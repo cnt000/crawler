@@ -23,6 +23,7 @@ const App = async ({
   doPdp = false,
   doImg = false,
   delay = 0,
+  overwrite = false,
 }) => {
   const Config = require('./Config')(ValidationRegex);
   const log = new Log();
@@ -50,6 +51,7 @@ const App = async ({
       crawler: CollectPlpProducts,
       progress: bar,
       delay,
+      overwrite,
     };
   }
 
@@ -70,6 +72,7 @@ const App = async ({
       crawler: CollectPdpProduct,
       progress: bar,
       delay,
+      overwrite,
     };
   }
 
@@ -93,6 +96,7 @@ const App = async ({
       crawler: void 0, // FIXME
       progress: bar,
       delay,
+      overwrite,
     };
   }
   try {
