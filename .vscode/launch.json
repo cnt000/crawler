@@ -23,7 +23,7 @@
       "program": "${workspaceFolder}/src/index.js",
       "envFile": "${workspaceFolder}/.env",
       "console": "integratedTerminal",
-      "args": ["--do", "pdp", "--delay", "3"],
+      "args": ["--do", "plp", "--delay", "1"],
       "internalConsoleOptions": "neverOpen",
       "skipFiles": ["<node_internals>/**", "${workspaceFolder}/data/**"]
     }

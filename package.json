@@ -12,17 +12,18 @@
   "author": "Edoardo Gargano cnt000",
   "license": "ISC",
   "dependencies": {
+    "@google-cloud/storage": "^5.2.0",
     "cheerio": "^1.0.0-rc.3",
     "del": "^5.1.0",
     "dotenv": "^8.2.0",
-    "globby": "^10.0.1",
+    "globby": "^10.0.2",
     "mkdirp-promise": "^5.0.1",
     "node-fetch": "^2.6.0",
     "prettier": "^1.19.1",
-    "yargs": "^15.0.2"
+    "yargs": "^15.4.1"
   },
   "devDependencies": {
-    "eslint": "^6.7.1",
+    "eslint": "^6.8.0",
     "eslint-config-strongloop": "^2.1.0",
     "jest": "^24.9.0"
   }

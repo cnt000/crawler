@@ -12,23 +12,38 @@ const UrlToJson = require('./UrlToJson');
 const UrlToBin = require('./UrlToBin');
 const Log = require('./Log');
 
-const createFileName = (directory, filename) => id =>
+const createFileName = (directory, filename) => (id) =>
   `${directory}/${filename}-${id}.json`;
 
-const imageNameFunc = directory => filename => `${directory}/${filename}`;
+const imageNameFunc = (directory) => (filename) => `${directory}/${filename}`;
 
-const App = async ({
-  doClean = false,
-  doPlp = false,
-  doPdp = false,
-  doImg = false,
-  delay = 0,
-  overwrite = false,
-}) => {
+const App = async (params) => {
   const Config = require('./Config')(ValidationRegex);
   const log = new Log();
+  return stoca(Config, log, params);
+};
+
+async function stoca(
+  Config,
+  log,
+  {
+    doClean = false,
+    doPlp = false,
+    doPdp = false,
+    doImg = false,
+    upClean = false,
+    upPlp = false,
+    upPdp = false,
+    upImg = false,
+    delay = 0,
+    overwrite = false,
+  },
+) {
   let bar;
   let setup;
+
+  // se settato un do, fai un metodfo col do
+  // se settato un up, fai il metodo con up
 
   if (doClean) {
     const deletedPaths = await del([`${Config.dataDir}/*`]);
@@ -109,6 +124,6 @@ const App = async ({
   } catch (e) {
     console.log(e);
   }
-};
+}
 
 module.exports = App;
