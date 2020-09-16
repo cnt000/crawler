@@ -1,5 +1,7 @@
 require('dotenv').config();
+const globby = require('globby');
 const del = require('del');
+
 const ProgressBar = require('./ProgressBar');
 const ValidationRegex = require('./ValidationRegex');
 const Crawler = require('./Crawler');
@@ -11,119 +13,200 @@ const CollectPdpProduct = require('./CollectPdpProduct');
 const UrlToJson = require('./UrlToJson');
 const UrlToBin = require('./UrlToBin');
 const Log = require('./Log');
+const {
+  copyFileToGCS,
+  deleteFromGCS,
+} = require('./helpers/google-cloud-storage');
 
 const createFileName = (directory, filename) => (id) =>
   `${directory}/${filename}-${id}.json`;
 
 const imageNameFunc = (directory) => (filename) => `${directory}/${filename}`;
 
-const App = async (params) => {
-  const Config = require('./Config')(ValidationRegex);
-  const log = new Log();
-  return stoca(Config, log, params);
-};
-
-async function stoca(
-  Config,
-  log,
-  {
+const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
+  const {
     doClean = false,
     doPlp = false,
     doPdp = false,
     doImg = false,
+  } = doParam;
+  const {
     upClean = false,
     upPlp = false,
     upPdp = false,
     upImg = false,
-    delay = 0,
-    overwrite = false,
-  },
-) {
+  } = upParam;
+  const Config = require('./Config')(ValidationRegex);
+  const log = new Log();
+
+  const doCommand = doClean || doPlp || doPdp || doImg;
+  const upCommand = upClean || upPlp || upPdp || upImg;
   let bar;
   let setup;
 
-  // se settato un do, fai un metodfo col do
-  // se settato un up, fai il metodo con up
-
-  if (doClean) {
-    const deletedPaths = await del([`${Config.dataDir}/*`]);
-    if (deletedPaths.length) {
-      log.append(`Data files deleted from: ${deletedPaths}`);
+  if (doCommand) {
+    if (doClean) {
+      const deletedPaths = await del([`${Config.dataDir}/*`]);
+      if (deletedPaths.length) {
+        log.append(`Data files deleted from: ${deletedPaths}`);
+        log.print();
+      }
+    }
+    if (doPlp) {
+      const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
+      const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
+      const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
+      log.append(`I'm going to save ${plpPagesList.length} json files for plp`);
       log.print();
+      setup = {
+        what: ['Plp', directoryToSavePlps],
+        urlsList: plpPagesList,
+        callback: UrlToJson,
+        filename: createFileName(directoryToSavePlps, 'page'),
+        crawler: CollectPlpProducts,
+        progress: bar,
+        delay,
+        overwrite,
+      };
     }
-  }
-  if (doPlp) {
-    const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
-    const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
-    const directoryToSavePlps = `${Config.dataDir}${Config.plpDataDir}`;
-    log.append(`I'm going to save ${plpPagesList.length} json files for plp`);
-    log.print();
-    setup = {
-      what: ['Plp', directoryToSavePlps],
-      urlsList: plpPagesList,
-      callback: UrlToJson,
-      filename: createFileName(directoryToSavePlps, 'page'),
-      crawler: CollectPlpProducts,
-      progress: bar,
-      delay,
-      overwrite,
-    };
+
+    if (doPdp) {
+      const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
+      const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`;
+      const pdpFilesList = await GetPdpUrls(Config.baseUrl, plpFilesPattern);
+      if (pdpFilesList.length === 0) {
+        throw Error('Plp files missing, please run --do plp first');
+      }
+      log.append(`I'm going to save ${pdpFilesList.length} json files for pdp`);
+      log.print();
+      setup = {
+        what: ['Pdp', directoryToSavePdps],
+        urlsList: pdpFilesList,
+        callback: UrlToJson,
+        filename: createFileName(directoryToSavePdps, 'product'),
+        crawler: CollectPdpProduct,
+        progress: bar,
+        delay,
+        overwrite,
+      };
+    }
+
+    if (doImg) {
+      const directoryToSaveImgs = `${Config.dataDir}${Config.imgDataDir}`;
+      const pdpFilesPattern = `${Config.dataDir}${Config.pdpDataDir}/*.json`;
+      const imgsUrlsList = await GetImgsUrls(
+        `${Config.baseUrl}${Config.imgsUrl}`,
+        pdpFilesPattern,
+      );
+      if (imgsUrlsList.length === 0) {
+        throw Error('Pdp files missing, please run --do pdp first');
+      }
+      log.append(`I'm going to save ${imgsUrlsList.length} image files`);
+      log.print();
+      setup = {
+        what: ['Images', directoryToSaveImgs],
+        urlsList: imgsUrlsList,
+        callback: UrlToBin,
+        filename: imageNameFunc(directoryToSaveImgs),
+        crawler: void 0, // FIXME
+        progress: bar,
+        delay,
+        overwrite,
+      };
+    }
+    try {
+      bar = new ProgressBar(log, '=', setup.urlsList.length, '#', 100);
+      const setupWithProgressbar = { ...setup, progress: bar };
+      bar.draw();
+      await Crawler.crawl(setupWithProgressbar);
+      log.append(`${setup.what[0]} collected in: ${setup.what[1]}`);
+      log.print();
+      if (doImg) {
+        const { imageMini } = require('./helpers/imagemin');
+        const imageFilesPattern = `${Config.dataDir.substring(2)}${
+          Config.imgDataDir
+        }/*.jpg`;
+        const imageCompressedDir = `${Config.dataDir.substring(
+          2,
+        )}${Config.compressedImgDir}`;
+        await imageMini(imageFilesPattern, imageCompressedDir);
+        log.append(
+          `Images in ${imageFilesPattern} compressed id ${imageCompressedDir}`,
+        );
+        log.print();
+      }
+    } catch (e) {
+      console.log(e);
+    }
   }
 
-  if (doPdp) {
-    const directoryToSavePdps = `${Config.dataDir}${Config.pdpDataDir}`;
-    const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`;
-    const pdpFilesList = await GetPdpUrls(Config.baseUrl, plpFilesPattern);
-    if (pdpFilesList.length === 0) {
-      throw Error('Plp files missing, please run --do plp first');
+  if (upCommand) {
+    const bucket = 'pungi-assets';
+    log.append(`I will upload files in universe of ${bucket}`);
+    log.print();
+    if (upClean) {
+      deleteFromGCS('pungi-assets', 'img').catch(console.error);
+      deleteFromGCS('pungi-assets', 'pdp').catch(console.error);
+      deleteFromGCS('pungi-assets', 'plp').catch(console.error);
     }
-    log.append(`I'm going to save ${pdpFilesList.length} json files for pdp`);
-    log.print();
-    setup = {
-      what: ['Pdp', directoryToSavePdps],
-      urlsList: pdpFilesList,
-      callback: UrlToJson,
-      filename: createFileName(directoryToSavePdps, 'product'),
-      crawler: CollectPdpProduct,
-      progress: bar,
-      delay,
-      overwrite,
-    };
-  }
-
-  if (doImg) {
-    const directoryToSaveImgs = `${Config.dataDir}${Config.imgDataDir}`;
-    const pdpFilesPattern = `${Config.dataDir}${Config.pdpDataDir}/*.json`;
-    const imgsUrlsList = await GetImgsUrls(
-      `${Config.baseUrl}${Config.imgsUrl}`,
-      pdpFilesPattern,
-    );
-    if (imgsUrlsList.length === 0) {
-      throw Error('Pdp files missing, please run --do pdp first');
+    if (upPlp) {
+      const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`.substring(
+        2,
+      );
+      const destinationFolder = `${Config.plpDataDir}`.substring(1);
+      const paths = await globby([plpFilesPattern]);
+      log.append(
+        `I'm going to upload ${paths.length} json files to GCloud bucket: ${bucket}`,
+      );
+      log.print();
+      paths.map((path) => {
+        const file = require('path').basename(path);
+        copyFileToGCS(path, bucket, {
+          destination: `${destinationFolder}/${file}`,
+        });
+        log.append(`I've uploaded ${path} (● ♥ ͜ʖ ♥)`);
+        log.print();
+      });
     }
-    log.append(`I'm going to save ${imgsUrlsList.length} image files`);
-    log.print();
-    setup = {
-      what: ['Images', directoryToSaveImgs],
-      urlsList: imgsUrlsList,
-      callback: UrlToBin,
-      filename: imageNameFunc(directoryToSaveImgs),
-      crawler: void 0, // FIXME
-      progress: bar,
-      delay,
-      overwrite,
-    };
+    if (upPdp) {
+      const pdpFilesPattern = `${Config.dataDir}${Config.pdpDataDir}/*.json`.substring(
+        2,
+      );
+      const destinationFolder = `${Config.pdpDataDir}`.substring(1);
+      const paths = await globby([pdpFilesPattern]);
+      log.append(
+        `I'm going to upload ${paths.length} json files to GCloud bucket: ${bucket}`,
+      );
+      log.print();
+      paths.map((path) => {
+        const file = require('path').basename(path);
+        copyFileToGCS(path, bucket, {
+          destination: `${destinationFolder}/${file}`,
+        });
+        log.append(`I've uploaded ${path} ( ͡° ͜ʖ ͡°)ノ=☆`);
+        log.print();
+      });
+    }
+    if (upImg) {
+      const imgFilesPattern = `${Config.dataDir}${Config.imgDataDir}/*.jpg`.substring(
+        2,
+      );
+      const destinationFolder = `${Config.imgDataDir}`.substring(1);
+      const paths = await globby([imgFilesPattern]);
+      log.append(
+        `I'm going to upload ${paths.length} image files to GCloud bucket: ${bucket}`,
+      );
+      log.print();
+      paths.map((path) => {
+        const file = require('path').basename(path);
+        copyFileToGCS(path, bucket, {
+          destination: `${destinationFolder}/${file}`,
+        });
+        log.append(`I've uploaded ${path} ✌.|•͡˘‿•͡˘|.✌`);
+        log.print();
+      });
+    }
   }
-  try {
-    bar = new ProgressBar(log, '=', setup.urlsList.length, '#', 100);
-    const setupWithProgressbar = { ...setup, progress: bar };
-    bar.draw();
-    await Crawler.crawl(setupWithProgressbar);
-    log.append(`${setup.what[0]} collected in: ${setup.what[1]}`);
-    log.print();
-  } catch (e) {
-    console.log(e);
-  }
-}
+};
 
 module.exports = App;

@@ -15,6 +15,7 @@ const Config = ({ url, number, path, directory }) => ({
   plpPages: Number(getOrThrow(process.env.plpPages, number)),
   pdpUrl: getOrThrow(process.env.pdpUrl, path),
   imgsUrl: getOrThrow(process.env.imgsUrl, path),
+  compressedImgDir: getOrThrow(process.env.compressedImgDir, directory),
 });
 
 module.exports = Config;

@@ -1,7 +1,7 @@
 const argv = require('yargs')
   .usage(`Usage: $0 --do [clean|plp|pdp|img] --delay [seconds] --overwrite
---up [clean|plp|pdp|img] --delay [seconds] --overwrite`)
-  .demandOption(['do']).argv;
+--up [clean|plp|pdp|img] --delay [seconds] --overwrite`).argv;
+  // .demandOption(['do']).argv;
 
 const base = {
   doClean: false,
@@ -55,8 +55,8 @@ const commandUp = {
 };
 
 module.exports = {
-  ...commandDo[argv.do],
-  ...commandUp[argv.up],
+  doParam: commandDo[argv.do],
+  upParam: commandUp[argv.up],
   delay: argv.delay || 0,
   overwrite: argv.overwrite || false,
 };
