@@ -1,7 +1,6 @@
 const argv = require('yargs')
   .usage(`Usage: $0 --do [clean|plp|pdp|img] --delay [seconds] --overwrite
---up [clean|plp|pdp|img] --delay [seconds] --overwrite`).argv;
-  // .demandOption(['do']).argv;
+--up [clean|plp|pdp|img]`).argv;
 
 const base = {
   doClean: false,
