@@ -6,6 +6,5 @@ exports.imageMini = async (filePattern, destination) => {
     destination,
     plugins: [imageminMozjpeg({ quality: 80 })],
   });
-  files.map(({ destinationPath }) => console.log(destinationPath));
-  console.log(`Images in ${filePattern} compressed id ${destination}`);
+  return files;
 };

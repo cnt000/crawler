@@ -129,7 +129,8 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
         const imageCompressedDir = `${Config.dataDir.substring(
           2,
         )}${Config.compressedImgDir}`;
-        await imageMini(imageFilesPattern, imageCompressedDir);
+        const compressedFiles = await imageMini(imageFilesPattern, imageCompressedDir);
+        compressedFiles.map(({ destinationPath }) => console.log(destinationPath));
         log.append(
           `Images in ${imageFilesPattern} compressed id ${imageCompressedDir}`,
         );
