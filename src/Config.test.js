@@ -5,7 +5,7 @@ describe('Config', () => {
   beforeEach(() => {
     jest.resetModules();
     process.env = {
-      dataDir: './data',
+      dataDir: 'data',
       plpDataDir: 'plp/',
       pdpDataDir: 'pdp/',
       imgDataDir: '/img',

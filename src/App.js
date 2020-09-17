@@ -123,12 +123,10 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
       log.print();
       if (doImg) {
         const { imageMini } = require('./helpers/imagemin');
-        const imageFilesPattern = `${Config.dataDir.substring(2)}${
+        const imageFilesPattern = `${Config.dataDir}${
           Config.imgDataDir
-        }/*.jpg`;
-        const imageCompressedDir = `${Config.dataDir.substring(
-          2,
-        )}${Config.compressedImgDir}`;
+          }/*.jpg`;
+        const imageCompressedDir = `${Config.dataDir}${Config.compressedImgDir}`;
         const compressedFiles = await imageMini(imageFilesPattern, imageCompressedDir);
         compressedFiles.map(({ destinationPath }) => console.log(destinationPath));
         log.append(
@@ -151,9 +149,7 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
       deleteFromGCS('pungi-assets', 'plp').catch(console.error);
     }
     if (upPlp) {
-      const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`.substring(
-        2,
-      );
+      const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`;
       const destinationFolder = `${Config.plpDataDir}`.substring(1);
       const paths = await globby([plpFilesPattern]);
       log.append(
@@ -170,10 +166,8 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
       });
     }
     if (upPdp) {
-      const pdpFilesPattern = `${Config.dataDir}${Config.pdpDataDir}/*.json`.substring(
-        2,
-      );
-      const destinationFolder = `${Config.pdpDataDir}`.substring(1);
+      const pdpFilesPattern = `${Config.dataDir}${Config.pdpDataDir}/*.json`;
+      const destinationFolder = `${Config.pdpDataDir}`;
       const paths = await globby([pdpFilesPattern]);
       log.append(
         `I'm going to upload ${paths.length} json files to GCloud bucket: ${bucket}`,
@@ -189,9 +183,7 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
       });
     }
     if (upImg) {
-      const imgFilesPattern = `${Config.dataDir}${Config.imgDataDir}/*.jpg`.substring(
-        2,
-      );
+      const imgFilesPattern = `${Config.dataDir}${Config.imgDataDir}/*.jpg`;
       const destinationFolder = `${Config.imgDataDir}`.substring(1);
       const paths = await globby([imgFilesPattern]);
       log.append(
