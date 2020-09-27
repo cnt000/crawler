@@ -13,8 +13,9 @@ const ReadFile = async filename => {
   return json;
 };
 
-const SaveFile = async (filename, content) => {
+const SaveFile = async (filename, json) => {
   try {
+    const content = JSON.stringify(json, null, 2);
     await mkdirp(getDirName(filename));
     await fsPromises.writeFile(filename, content, {
       flag: 'w',

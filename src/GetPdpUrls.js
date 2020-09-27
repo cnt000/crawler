@@ -10,11 +10,16 @@ const GetPdpUrls = async (domain, pdpPagesPattern) => {
     async filename => await ReadFile(filename),
   );
 
-  const pdpPagesList = await Promise.all(plpFilesList).then(files =>
-    files
-      .map(json => json.map(product => `${domain}${product.href.slice(2)}`))
-      .flat(1),
-  );
+  console.log(plpFilesList);
+
+  const pdpPagesList = await Promise.all(plpFilesList)
+    .then(files =>
+      files
+        .map(json => json
+          .filter(product => /[0-9]+$/.test(product.href))
+          .map(product => `${domain}${product.href.slice(2)}`))
+        .flat(1),
+    );
 
   return pdpPagesList;
 };

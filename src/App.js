@@ -37,7 +37,7 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
     upImg = false,
   } = upParam;
   const Config = require('./Config')(ValidationRegex);
-  const log = new Log();
+  // const log = new Log();
 
   const doCommand = doClean || doPlp || doPdp || doImg;
   const upCommand = upClean || upPlp || upPdp || upImg;
@@ -49,9 +49,14 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
       const deletedPaths = await del([`${Config.dataDir}/*`]);
       if (deletedPaths.length) {
         log.append(`Data files deleted from: ${deletedPaths}`);
-        log.print();
       }
+      else {
+        log.append(`Nothing to deleted from: ${Config.dataDir}/*`);
+      }
+      log.print();
+      return;
     }
+
     if (doPlp) {
       const plpUrl = `${Config.baseUrl}${Config.plpUrl}`;
       const plpPagesList = GetPlpUrls(plpUrl, Config.plpPages);
@@ -77,8 +82,8 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
       if (pdpFilesList.length === 0) {
         throw Error('Plp files missing, please run --do plp first');
       }
-      log.append(`I'm going to save ${pdpFilesList.length} json files for pdp`);
-      log.print();
+      // log.append(`I'm going to save ${pdpFilesList.length} json files for pdp`);
+      // log.print();
       setup = {
         what: ['Pdp', directoryToSavePdps],
         urlsList: pdpFilesList,
@@ -115,12 +120,12 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
       };
     }
     try {
-      bar = new ProgressBar(log, '=', setup.urlsList.length, '#', 100);
+      // bar = new ProgressBar(log, '=', setup.urlsList.length, '#', 100);
       const setupWithProgressbar = { ...setup, progress: bar };
-      bar.draw();
+      // bar.draw();
       await Crawler.crawl(setupWithProgressbar);
-      log.append(`${setup.what[0]} collected in: ${setup.what[1]}`);
-      log.print();
+      // log.append(`${setup.what[0]} collected in: ${setup.what[1]}`);
+      // log.print();
       if (doImg) {
         const { imageMini } = require('./helpers/imagemin');
         const imageFilesPattern = `${Config.dataDir}${
@@ -132,8 +137,8 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
         log.append(
           `Images in ${imageFilesPattern} compressed id ${imageCompressedDir}`,
         );
-        log.print();
       }
+      // log.print();
     } catch (e) {
       console.log(e);
     }
@@ -169,21 +174,21 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
       const pdpFilesPattern = `${Config.dataDir}${Config.pdpDataDir}/*.json`;
       const destinationFolder = `${Config.pdpDataDir}`;
       const paths = await globby([pdpFilesPattern]);
-      log.append(
-        `I'm going to upload ${paths.length} json files to GCloud bucket: ${bucket}`,
-      );
-      log.print();
+      // log.append(
+      //   `I'm going to upload ${paths.length} json files to GCloud bucket: ${bucket}`,
+      // );
+      // log.print();
       paths.map((path) => {
         const file = require('path').basename(path);
         copyFileToGCS(path, bucket, {
           destination: `${destinationFolder}/${file}`,
         });
-        log.append(`I've uploaded ${path} ( ͡° ͜ʖ ͡°)ノ=☆`);
-        log.print();
+        // log.append(`I've uploaded ${path} ( ͡° ͜ʖ ͡°)ノ=☆`);
+        // log.print();
       });
     }
     if (upImg) {
-      const imgFilesPattern = `${Config.dataDir}${Config.imgDataDir}/*.jpg`;
+      const imgFilesPattern = `${Config.dataDir}${Config.compressedImgDir}/*.jpg`;
       const destinationFolder = `${Config.imgDataDir}`.substring(1);
       const paths = await globby([imgFilesPattern]);
       log.append(
@@ -194,11 +199,13 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
         const file = require('path').basename(path);
         copyFileToGCS(path, bucket, {
           destination: `${destinationFolder}/${file}`,
-        });
+        })
+        .catch(e => console.log(e));
         log.append(`I've uploaded ${path} ✌.|•͡˘‿•͡˘|.✌`);
         log.print();
       });
     }
+    // log.print();
   }
 };
 

@@ -1,5 +1,5 @@
 const { Storage } = require('@google-cloud/storage');
-const path = require('path');
+const fetch = require('node-fetch');
 
 const GOOGLE_CLOUD_PROJECT_ID = 'pungilandia-gcs';
 const GOOGLE_CLOUD_KEYFILE = './pungilandia-gcs-0d178b593aff.json';
@@ -9,13 +9,19 @@ const storage = new Storage({
   keyFilename: GOOGLE_CLOUD_KEYFILE,
 });
 
-exports.copyFileToGCS = async (localFilePath, bucketName, options = {}) => {
-  await storage
-    .bucket(bucketName)
-    .upload(localFilePath, options)
-    .catch((err) => console.log(err));
+exports.copyFileToGCS = async (localFilePath, bucketName, { destination = localFilePath }) => {
+  const fileExists = await fetch(exports.getPublicUrl(bucketName, `${destination}`), { method: 'HEAD' })
+    .then(res => res.ok).catch(err => console.log('Error:', err));
+  if (!fileExists) {
+    await storage
+      .bucket(bucketName)
+      .upload(localFilePath, { destination })
+      .catch((err) => {
+        console.log(err.message)
+      });
+  }
 
-  console.log(exports.getPublicUrl(bucketName, path.basename(localFilePath)));
+  console.log(exports.getPublicUrl(bucketName, `${destination}`));
 };
 
 exports.getPublicUrl = (bucketName, fileName) =>

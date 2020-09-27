@@ -8,7 +8,7 @@ const Crawler = {
     crawler,
     progress,
     delay,
-    overwrite,
+    overwrite = false,
   }) => {
     setTimeout(async () => {
       if (urlsList.length === 0) {
@@ -20,7 +20,7 @@ const Crawler = {
       const fileExists = fs.existsSync(filenameWithId);
       console.time(url);
       try {
-        if (!fileExists || overwrite) {
+        if ((!fileExists || overwrite)) {
           await callback(url, filenameWithId, crawler);
         }
       } catch (e) {

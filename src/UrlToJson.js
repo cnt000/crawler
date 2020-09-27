@@ -1,12 +1,12 @@
 const { FetchToText } = require('./FetchTo');
-const { SaveFile } = require('./File');
+const { Save } = require('./Save');
 
 const UrlToJson = async (url, filename, crawlFunc) => {
   try {
     const html = await FetchToText(url);
     const dataFromWebpage = crawlFunc(html, filename);
-    const json = JSON.stringify(dataFromWebpage, null, 2);
-    await SaveFile(filename, json);
+    await Save(filename, dataFromWebpage);
+    console.log(`${filename} saved`);
   } catch (e) {
     throw Error(e);
   }
