@@ -1,5 +1,3 @@
-const fs = require('fs');
-
 const Crawler = {
   crawl: async ({
     urlsList,
@@ -17,12 +15,12 @@ const Crawler = {
       const url = urlsList.pop();
       const id = /=/.test(url) ? url.split('=').pop() : url.split('/').pop();
       const filenameWithId = filename(id);
-      const fileExists = fs.existsSync(filenameWithId);
+      // const fileExists = fs.existsSync(filenameWithId);
       console.time(url);
       try {
-        if ((!fileExists || overwrite)) {
+        // if ((!fileExists || overwrite)) {
           await callback(url, filenameWithId, crawler);
-        }
+        // }
       } catch (e) {
         throw Error(e);
       }

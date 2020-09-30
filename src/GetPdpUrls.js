@@ -10,8 +10,6 @@ const GetPdpUrls = async (domain, pdpPagesPattern) => {
     async filename => await ReadFile(filename),
   );
 
-  console.log(plpFilesList);
-
   const pdpPagesList = await Promise.all(plpFilesList)
     .then(files =>
       files
