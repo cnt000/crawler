@@ -5,17 +5,17 @@ jest.mock('globby');
 
 describe('GetPdpUrls', () => {
   const content = [
-    { href: '../test/index' },
-    { href: '../test/page' },
-    { href: '../test/endpoint' },
+    { href: '../test/index123' },
+    { href: '../test/page456' },
+    { href: '../test/endpoint789' },
   ];
   const result = [
-    'http://www.test.it/test/index',
-    'http://www.test.it/test/page',
-    'http://www.test.it/test/endpoint',
-    'http://www.test.it/test/index',
-    'http://www.test.it/test/page',
-    'http://www.test.it/test/endpoint',
+    'http://www.test.it/test/index123',
+    'http://www.test.it/test/page456',
+    'http://www.test.it/test/endpoint789',
+    'http://www.test.it/test/index123',
+    'http://www.test.it/test/page456',
+    'http://www.test.it/test/endpoint789',
   ];
   const fileList = ['Test-1.json', 'Test-6.json'];
   globby.mockResolvedValue(fileList);
@@ -35,6 +35,6 @@ describe('GetPdpUrls', () => {
     jest.spyOn(fsPromises, 'readFile').mockImplementation(filename => {
       return JSON.stringify(content);
     });
-    expect(await GetPdpUrls('', '')).toEqual(['', '']);
+    expect(await GetPdpUrls('', '')).toEqual([]);
   });
 });

@@ -1,12 +1,12 @@
 const Crawler = {
   crawl: async ({
+    what,
     urlsList,
     callback,
     filename,
     crawler,
     progress,
     delay,
-    overwrite = false,
   }) => {
     setTimeout(async () => {
       if (urlsList.length === 0) {
@@ -15,12 +15,9 @@ const Crawler = {
       const url = urlsList.pop();
       const id = /=/.test(url) ? url.split('=').pop() : url.split('/').pop();
       const filenameWithId = filename(id);
-      // const fileExists = fs.existsSync(filenameWithId);
       console.time(url);
       try {
-        // if ((!fileExists || overwrite)) {
-          await callback(url, filenameWithId, crawler);
-        // }
+        await callback(url, filenameWithId, crawler, what[0]);
       } catch (e) {
         throw Error(e);
       }
@@ -28,6 +25,7 @@ const Crawler = {
         progress.add();
       }
       await Crawler.crawl({
+        what,
         urlsList,
         callback,
         filename,

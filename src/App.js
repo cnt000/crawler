@@ -23,7 +23,7 @@ const createFileName = (directory, filename) => (id) =>
 
 const imageNameFunc = (directory) => (filename) => `${directory}/${filename}`;
 
-const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
+const App = async ({ doParam, upParam, delay = 0}) => {
   const {
     doClean = false,
     doPlp = false,
@@ -49,8 +49,7 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
       const deletedPaths = await del([`${Config.dataDir}/*`]);
       if (deletedPaths.length) {
         log.append(`Data files deleted from: ${deletedPaths}`);
-      }
-      else {
+      } else {
         log.append(`Nothing to deleted from: ${Config.dataDir}/*`);
       }
       log.print();
@@ -71,7 +70,6 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
         crawler: CollectPlpProducts,
         progress: bar,
         delay,
-        overwrite,
       };
     }
 
@@ -92,7 +90,6 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
         crawler: CollectPdpProduct,
         progress: bar,
         delay,
-        overwrite,
       };
     }
 
@@ -113,10 +110,9 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
         urlsList: imgsUrlsList,
         callback: UrlToBin,
         filename: imageNameFunc(directoryToSaveImgs),
-        crawler: void 0, // FIXME
+        crawler: void 0,
         progress: bar,
         delay,
-        overwrite,
       };
     }
     try {
@@ -130,7 +126,7 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
         const { imageMini } = require('./helpers/imagemin');
         const imageFilesPattern = `${Config.dataDir}${
           Config.imgDataDir
-          }/*.jpg`;
+        }/*.jpg`;
         const imageCompressedDir = `${Config.dataDir}${Config.compressedImgDir}`;
         const compressedFiles = await imageMini(imageFilesPattern, imageCompressedDir);
         compressedFiles.map(({ destinationPath }) => console.log(destinationPath));
@@ -200,7 +196,7 @@ const App = async ({ doParam, upParam, delay = 0, overwrite = false }) => {
         copyFileToGCS(path, bucket, {
           destination: `${destinationFolder}/${file}`,
         })
-        .catch(e => console.log(e));
+          .catch(e => console.log(e));
         log.append(`I've uploaded ${path} ✌.|•͡˘‿•͡˘|.✌`);
         log.print();
       });

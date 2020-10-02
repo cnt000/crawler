@@ -9,20 +9,22 @@ const storage = new Storage({
   keyFilename: GOOGLE_CLOUD_KEYFILE,
 });
 
-exports.copyFileToGCS = async (localFilePath, bucketName, { destination = localFilePath }) => {
-  const fileExists = await fetch(exports.getPublicUrl(bucketName, `${destination}`), { method: 'HEAD' })
-    .then(res => res.ok).catch(err => console.log('Error:', err));
-  if (!fileExists) {
-    await storage
-      .bucket(bucketName)
-      .upload(localFilePath, { destination })
-      .catch((err) => {
-        console.log(err.message)
-      });
-  }
+exports.copyFileToGCS =
+  async (localFilePath, bucketName, { destination = localFilePath }) => {
+    const fileExists =
+      await fetch(exports.getPublicUrl(bucketName, `${destination}`), { method: 'HEAD' })
+        .then(res => res.ok).catch(err => console.log('Error:', err));
+    if (!fileExists) {
+      await storage
+        .bucket(bucketName)
+        .upload(localFilePath, { destination })
+        .catch((err) => {
+          console.log(err.message);
+        });
+    }
 
-  console.log(exports.getPublicUrl(bucketName, `${destination}`));
-};
+    console.log(exports.getPublicUrl(bucketName, `${destination}`));
+  };
 
 exports.getPublicUrl = (bucketName, fileName) =>
   `https://storage.googleapis.com/${bucketName}/${fileName}`;

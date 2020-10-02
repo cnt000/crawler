@@ -72,7 +72,7 @@ describe('Crawler', () => {
     const filenameF = jest.fn(() => 'test2');
     const crawler = jest.fn();
     const setup = {
-      what: [],
+      what: ['pdp'],
       urlsList: urlList,
       callback,
       filename: filenameF,
@@ -86,13 +86,14 @@ describe('Crawler', () => {
       'http://www.test.com?id=2',
       'test2',
       crawler,
+      'pdp',
     );
   });
   it('should use last = in the url for the number', async () => {
     const urlList = ['http://www.test.it/test?id=1'];
     const filenameF = jest.fn(() => 'test');
     const setup = {
-      what: [],
+      what: ['pdp'],
       urlsList: urlList,
       callback,
       filename: filenameF,
@@ -108,7 +109,7 @@ describe('Crawler', () => {
     const urlList = ['http://www.test.it/first/second/last.jpg'];
     const filenameF = jest.fn(() => 'test');
     const setup = {
-      what: [],
+      what: ['pdp'],
       urlsList: urlList,
       callback,
       filename: filenameF,
@@ -125,7 +126,7 @@ describe('Crawler', () => {
     const filenameF = jest.fn(() => 'test');
     const crawler = jest.fn();
     const setup = {
-      what: [],
+      what: ['pdp'],
       urlsList: urlList,
       callback,
       filename: filenameF,
@@ -139,12 +140,13 @@ describe('Crawler', () => {
       'http://www.test.com?id=98989',
       'test',
       crawler,
+      'pdp',
     );
   });
   it('should call setTimeout with a function, with 1000 ms', async () => {
     const filenameF = jest.fn(() => 'test');
     const setup = {
-      what: [],
+      what: ['pdp'],
       urlsList,
       callback,
       filename: filenameF,

@@ -11,7 +11,7 @@ class Log {
   }
   print() {
     // process.stdout.write('\x1Bc');
-    console.clear();
+    // console.clear();
     console.log(`${this.text}\n${this.updatableText}`);
   }
 }
