@@ -4,7 +4,7 @@ const { SaveFile } = require('./File');
 const Save = async (filename, content, type) => {
   try {
     let saved;
-    if (type === 'pdp') {
+    if (type === 'Pdp') { // TODO TEST to ahave been called SaveFirestore
       saved = await SaveFirestore(filename, content);
     } else {
       saved = await SaveFile(filename, content);

@@ -70,6 +70,7 @@ const App = async ({ doParam, upParam, delay = 0}) => {
         crawler: CollectPlpProducts,
         progress: bar,
         delay,
+        log,
       };
     }
 
@@ -90,6 +91,7 @@ const App = async ({ doParam, upParam, delay = 0}) => {
         crawler: CollectPdpProduct,
         progress: bar,
         delay,
+        log,
       };
     }
 

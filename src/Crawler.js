@@ -7,6 +7,7 @@ const Crawler = {
     crawler,
     progress,
     delay,
+    log,
   }) => {
     setTimeout(async () => {
       if (urlsList.length === 0) {
@@ -17,7 +18,7 @@ const Crawler = {
       const filenameWithId = filename(id);
       console.time(url);
       try {
-        await callback(url, filenameWithId, crawler, what[0]);
+        await callback(url, filenameWithId, crawler, what[0], log);
       } catch (e) {
         throw Error(e);
       }
@@ -32,6 +33,7 @@ const Crawler = {
         crawler,
         progress,
         delay,
+        log,
       });
     }, delay * 1000);
   },

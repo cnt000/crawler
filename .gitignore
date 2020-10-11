@@ -4,5 +4,4 @@ coverage/
 data
 .DS_Store
 TODO.md
-pungilandia-gcs-0d178b593aff.json
-pungilandia-firebase-firebase-adminsdk-vnngg-f035cbe9c5.json
+pungilandia*.json
