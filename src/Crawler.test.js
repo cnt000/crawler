@@ -71,6 +71,7 @@ describe('Crawler', () => {
     const urlList = ['http://www.test.com?id=2'];
     const filenameF = jest.fn(() => 'test2');
     const crawler = jest.fn();
+    const log = jest.fn();
     const setup = {
       what: ['pdp'],
       urlsList: urlList,
@@ -79,6 +80,7 @@ describe('Crawler', () => {
       crawler,
       progress: false,
       delay: 0,
+      log,
     };
     await Crawler.crawl(setup);
     jest.runOnlyPendingTimers();
@@ -87,11 +89,13 @@ describe('Crawler', () => {
       'test2',
       crawler,
       'pdp',
+      log,
     );
   });
   it('should use last = in the url for the number', async () => {
     const urlList = ['http://www.test.it/test?id=1'];
     const filenameF = jest.fn(() => 'test');
+    const log = jest.fn();
     const setup = {
       what: ['pdp'],
       urlsList: urlList,
@@ -100,6 +104,7 @@ describe('Crawler', () => {
       crawler: jest.fn(),
       progress: { add: () => {} },
       delay: 0,
+      log,
     };
     await Crawler.crawl(setup);
     jest.runOnlyPendingTimers();
@@ -108,6 +113,7 @@ describe('Crawler', () => {
   it('should use last / in the url for the number', async () => {
     const urlList = ['http://www.test.it/first/second/last.jpg'];
     const filenameF = jest.fn(() => 'test');
+    const log = jest.fn();
     const setup = {
       what: ['pdp'],
       urlsList: urlList,
@@ -116,6 +122,7 @@ describe('Crawler', () => {
       crawler: jest.fn(),
       progress: { add: () => {} },
       delay: 0,
+      log,
     };
     await Crawler.crawl(setup);
     jest.runOnlyPendingTimers();
@@ -125,6 +132,7 @@ describe('Crawler', () => {
     const urlList = ['http://www.test.com?id=98989'];
     const filenameF = jest.fn(() => 'test');
     const crawler = jest.fn();
+    const log = jest.fn();
     const setup = {
       what: ['pdp'],
       urlsList: urlList,
@@ -133,6 +141,7 @@ describe('Crawler', () => {
       crawler,
       progress: false,
       delay: 0,
+      log,
     };
     await Crawler.crawl(setup);
     jest.runOnlyPendingTimers();
@@ -141,6 +150,7 @@ describe('Crawler', () => {
       'test',
       crawler,
       'pdp',
+      log,
     );
   });
   it('should call setTimeout with a function, with 1000 ms', async () => {
