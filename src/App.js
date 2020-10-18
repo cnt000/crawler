@@ -23,7 +23,7 @@ const createFileName = (directory, filename) => (id) =>
 
 const imageNameFunc = (directory) => (filename) => `${directory}/${filename}`;
 
-const App = async ({ doParam, upParam, delay = 0}) => {
+const App = async ({ doParam, upParam, delay = 0 }) => {
   const {
     doClean = false,
     doPlp = false,
@@ -32,15 +32,13 @@ const App = async ({ doParam, upParam, delay = 0}) => {
   } = doParam;
   const {
     upClean = false,
-    upPlp = false,
-    upPdp = false,
     upImg = false,
   } = upParam;
   const Config = require('./Config')(ValidationRegex);
   const log = new Log();
 
   const doCommand = doClean || doPlp || doPdp || doImg;
-  const upCommand = upClean || upPlp || upPdp || upImg;
+  const upCommand = upClean || upImg;
   let bar;
   let setup;
 
@@ -126,12 +124,15 @@ const App = async ({ doParam, upParam, delay = 0}) => {
       log.print();
       if (doImg) {
         const { imageMini } = require('./helpers/imagemin');
-        const imageFilesPattern = `${Config.dataDir}${
-          Config.imgDataDir
-        }/*.jpg`;
+        const imageFilesPattern = `${Config.dataDir}${Config.imgDataDir}/*.jpg`;
         const imageCompressedDir = `${Config.dataDir}${Config.compressedImgDir}`;
-        const compressedFiles = await imageMini(imageFilesPattern, imageCompressedDir);
-        compressedFiles.map(({ destinationPath }) => console.log(destinationPath));
+        const compressedFiles = await imageMini(
+          imageFilesPattern,
+          imageCompressedDir,
+        );
+        compressedFiles.map(({ destinationPath }) =>
+          console.log(destinationPath),
+        );
         log.append(
           `Images in ${imageFilesPattern} compressed id ${imageCompressedDir}`,
         );
@@ -151,40 +152,6 @@ const App = async ({ doParam, upParam, delay = 0}) => {
       deleteFromGCS('pungi-assets', 'pdp').catch(console.error);
       deleteFromGCS('pungi-assets', 'plp').catch(console.error);
     }
-    if (upPlp) {
-      const plpFilesPattern = `${Config.dataDir}${Config.plpDataDir}/*.json`;
-      const destinationFolder = `${Config.plpDataDir}`.substring(1);
-      const paths = await globby([plpFilesPattern]);
-      log.append(
-        `I'm going to upload ${paths.length} json files to GCloud bucket: ${bucket}`,
-      );
-      log.print();
-      paths.map((path) => {
-        const file = require('path').basename(path);
-        copyFileToGCS(path, bucket, {
-          destination: `${destinationFolder}/${file}`,
-        });
-        log.append(`I've uploaded ${path} (● ♥ ͜ʖ ♥)`);
-        log.print();
-      });
-    }
-    if (upPdp) {
-      const pdpFilesPattern = `${Config.dataDir}${Config.pdpDataDir}/*.json`;
-      const destinationFolder = `${Config.pdpDataDir}`;
-      const paths = await globby([pdpFilesPattern]);
-      log.append(
-        `I'm going to upload ${paths.length} json files to GCloud bucket: ${bucket}`,
-      );
-      log.print();
-      paths.map((path) => {
-        const file = require('path').basename(path);
-        copyFileToGCS(path, bucket, {
-          destination: `${destinationFolder}/${file}`,
-        });
-        log.append(`I've uploaded ${path} ( ͡° ͜ʖ ͡°)ノ=☆`);
-        log.print();
-      });
-    }
     if (upImg) {
       const imgFilesPattern = `${Config.dataDir}${Config.compressedImgDir}/*.jpg`;
       const destinationFolder = `${Config.imgDataDir}`.substring(1);
@@ -197,12 +164,12 @@ const App = async ({ doParam, upParam, delay = 0}) => {
         const file = require('path').basename(path);
         copyFileToGCS(path, bucket, {
           destination: `${destinationFolder}/${file}`,
-        })
-          .catch(e => console.log(e));
+        }).catch((e) => console.log(e));
         log.append(`I've uploaded ${path} ✌.|•͡˘‿•͡˘|.✌`);
         log.print();
       });
     }
+    log.append('Finished to upload');
     log.print();
   }
 };
