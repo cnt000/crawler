@@ -1,31 +1,29 @@
 const algoliasearch = require('algoliasearch');
+const Firestore = require('./Firestore');
 
-// TODO key in env
-const client = algoliasearch('UKO1VN8X22', '••••••••••••••••••••');
-const index = client.initIndex('products');
+const SaveToAlgolia = async (f) => {
+  const client = algoliasearch('UKO1VN8X22', process.env.algoliaAdminApiKey);
+  const index = client.initIndex('products');
+  let products = [];
 
-// get all from firestore TODO
-const products = require('./contacts.json');
+  try {
+    const productsCollection = await Firestore.db.collection('products');
+    const snapshot = await productsCollection.get();
+    snapshot.forEach((doc) => {
+      products.push(doc.data());
+    });
 
-index
-  .saveObjects(products, {
-    autoGenerateObjectIDIfNotExist: true,
-  })
-  .then(({ objectIDs }) => {
-    console.log(objectIDs);
-  });
+    const { objectIDs } = await index.saveObjects(products, {
+      autoGenerateObjectIDIfNotExist: true,
+    });
 
-index
-  .setSettings({
-    searchableAttributes: [
-      'lastname',
-      'firstname',
-      'company',
-      'email',
-      'city',
-      'address',
-    ],
-  })
-  .then(() => {
-    // done
-  });
+    await index.setSettings({
+      searchableAttributes: ['name', 'price'],
+    });
+    return objectIDs;
+  } catch (e) {
+    throw Error(e);
+  }
+};
+
+module.exports = { SaveToAlgolia };

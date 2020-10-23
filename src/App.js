@@ -12,7 +12,7 @@ const CollectPlpProducts = require('./CollectPlpProducts');
 const CollectPdpProduct = require('./CollectPdpProduct');
 const UrlToJson = require('./UrlToJson');
 const UrlToBin = require('./UrlToBin');
-const saveToAlgolia = require('./SaveToAlgolia');
+const { SaveToAlgolia } = require('./SaveToAlgolia');
 const Log = require('./Log');
 const {
   copyFileToGCS,
@@ -117,8 +117,8 @@ const App = async ({ doParam, upParam, delay = 0 }) => {
 
     if (doAlgolia) {
       // do algolia on new file
-      saveToAlgolia();
-      log.append('I saved index in Algolia');
+      const indexes = await SaveToAlgolia();
+      log.append(`I saved index in Algolia: ${indexes.join(', ').substring(0, 26)}...`);
       log.print();
       return;
     }

@@ -39,5 +39,17 @@
       "internalConsoleOptions": "neverOpen",
       "skipFiles": ["<node_internals>/**", "${workspaceFolder}/data/**"]
     },
+    {
+      "type": "node",
+      "request": "launch",
+      "name": "do algolia",
+      "runtimeExecutable": "node",
+      "program": "${workspaceFolder}/src/index.js",
+      "envFile": "${workspaceFolder}/.env",
+      "console": "integratedTerminal",
+      "args": ["--do", "algolia"],
+      "internalConsoleOptions": "neverOpen",
+      "skipFiles": ["<node_internals>/**", "${workspaceFolder}/data/**"]
+    },
   ]
 }
