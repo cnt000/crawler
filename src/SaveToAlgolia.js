@@ -13,7 +13,12 @@ const SaveToAlgolia = async (f) => {
       products.push(doc.data());
     });
 
-    const { objectIDs } = await index.saveObjects(products, {
+    // const { objectIDs } = await index.saveObjects(products, {
+    //   autoGenerateObjectIDIfNotExist: true,
+    // });
+
+    const { objectIDs } = await index.replaceAllObjects(products, {
+      safe: true,
       autoGenerateObjectIDIfNotExist: true,
     });
 
