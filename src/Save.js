@@ -1,4 +1,4 @@
-const { SaveFirestore } = require('./SaveFirestore');
+const { SaveFirestore } = require('./SaveToFirestore');
 const { SaveFile } = require('./File');
 
 const Save = async (filename, content, type) => {

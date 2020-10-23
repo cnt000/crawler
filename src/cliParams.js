@@ -1,5 +1,5 @@
 const argv = require('yargs')
-  .usage(`Usage: $0 --do [clean|plp|pdp|img] --delay [seconds]
+  .usage(`Usage: $0 --do [clean|plp|pdp|img|algolia] --delay [seconds]
 --up [clean|img]`).argv;
 
 const base = {
@@ -7,6 +7,7 @@ const base = {
   doPlp: false,
   doPdp: false,
   doImg: false,
+  doAlgolia: false,
   upClean: false,
   upImg: false,
 };
@@ -27,6 +28,10 @@ const commandDo = {
   img: {
     ...base,
     doImg: true,
+  },
+  algolia: {
+    ...base,
+    doAlgolia: true,
   },
   undefined: base,
 };

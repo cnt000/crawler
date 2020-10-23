@@ -12,6 +12,7 @@ const CollectPlpProducts = require('./CollectPlpProducts');
 const CollectPdpProduct = require('./CollectPdpProduct');
 const UrlToJson = require('./UrlToJson');
 const UrlToBin = require('./UrlToBin');
+const saveToAlgolia = require('./SaveToAlgolia');
 const Log = require('./Log');
 const {
   copyFileToGCS,
@@ -29,15 +30,13 @@ const App = async ({ doParam, upParam, delay = 0 }) => {
     doPlp = false,
     doPdp = false,
     doImg = false,
+    doAlgolia = false,
   } = doParam;
-  const {
-    upClean = false,
-    upImg = false,
-  } = upParam;
+  const { upClean = false, upImg = false } = upParam;
   const Config = require('./Config')(ValidationRegex);
   const log = new Log();
 
-  const doCommand = doClean || doPlp || doPdp || doImg;
+  const doCommand = doClean || doPlp || doPdp || doImg || doAlgolia;
   const upCommand = upClean || upImg;
   let bar;
   let setup;
@@ -115,6 +114,15 @@ const App = async ({ doParam, upParam, delay = 0 }) => {
         delay,
       };
     }
+
+    if (doAlgolia) {
+      // do algolia on new file
+      saveToAlgolia();
+      log.append('I saved index in Algolia');
+      log.print();
+      return;
+    }
+
     try {
       bar = new ProgressBar(log, '=', setup.urlsList.length, '#', 100);
       const setupWithProgressbar = { ...setup, progress: bar };
