@@ -17,7 +17,7 @@
     "cheerio": "^1.0.0-rc.3",
     "del": "^5.1.0",
     "dotenv": "^8.2.0",
-    "firebase-admin": "^9.2.0",
+    "firebase-admin": "^11.4.1",
     "globby": "^10.0.2",
     "imagemin": "^7.0.1",
     "imagemin-mozjpeg": "^9.0.0",
